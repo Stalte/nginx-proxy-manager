@@ -1,0 +1,7 @@
+{
+	"type": "array",
+	"description": "Sentinel lists (without entries)",
+	"items": {
+		"$ref": "./sentinel-list-object.json"
+	}
+}

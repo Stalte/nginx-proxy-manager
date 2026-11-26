@@ -12,6 +12,8 @@ export * from "./PermissionsModal";
 export * from "./ProxyHostModal";
 export * from "./RedirectionHostModal";
 export * from "./RenewCertificateModal";
+export * from "./SentinelListModal";
+export * from "./SentinelRuleModal";
 export * from "./SetPasswordModal";
 export * from "./StreamModal";
 export * from "./TwoFactorModal";

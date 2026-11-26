@@ -1,0 +1,85 @@
+{
+	"operationId": "createSentinelList",
+	"summary": "Create an IP or User-Agent list",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"name": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 64,
+							"example": "Tor exit nodes"
+						},
+						"description": {
+							"type": "string",
+							"maxLength": 500,
+							"example": ""
+						},
+						"kind": {
+							"type": "string",
+							"enum": [
+								"ip",
+								"user_agent"
+							],
+							"example": "ip"
+						},
+						"source_url": {
+							"type": "string",
+							"maxLength": 2048,
+							"description": "https:// URL to keep the list up to date from (empty: entries edited by hand)",
+							"example": "https://check.torproject.org/torbulkexitlist"
+						},
+						"refresh_s": {
+							"type": "integer",
+							"minimum": 300,
+							"maximum": 604800,
+							"example": 3600
+						},
+						"items": {
+							"type": "array",
+							"maxItems": 50000,
+							"items": {
+								"type": "string",
+								"maxLength": 1024
+							},
+							"description": "Entries of a list edited by hand",
+							"example": []
+						}
+					},
+					"required": [
+						"name",
+						"kind"
+					]
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-list-object.json"
+					}
+				}
+			}
+		}
+	}
+}

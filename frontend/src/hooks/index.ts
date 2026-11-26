@@ -17,6 +17,7 @@ export * from "./useProxyHostLogs";
 export * from "./useProxyHosts";
 export * from "./useRedirectionHost";
 export * from "./useRedirectionHosts";
+export * from "./useSentinel";
 export * from "./useSetting";
 export * from "./useStream";
 export * from "./useStreams";

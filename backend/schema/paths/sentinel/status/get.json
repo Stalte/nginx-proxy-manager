@@ -1,0 +1,26 @@
+{
+	"operationId": "getSentinelStatus",
+	"summary": "Get Sentinel status",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-status-object.json"
+					}
+				}
+			}
+		}
+	}
+}

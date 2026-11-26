@@ -1,0 +1,23 @@
+{
+	"type": "object",
+	"description": "Any group whose conditions all match",
+	"additionalProperties": false,
+	"required": [
+		"groups"
+	],
+	"properties": {
+		"groups": {
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 10,
+			"items": {
+				"type": "array",
+				"minItems": 1,
+				"maxItems": 10,
+				"items": {
+					"$ref": "./sentinel-condition.json"
+				}
+			}
+		}
+	}
+}

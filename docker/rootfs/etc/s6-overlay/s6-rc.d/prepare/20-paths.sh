@@ -28,6 +28,9 @@ mkdir -p \
 	/data/nginx/dead_host \
 	/data/nginx/temp \
 	/data/letsencrypt-acme-challenge \
+	/data/sentinel \
+	/data/sentinel/lists \
+	/data/sentinel/geoip \
 	/run/nginx \
 	/tmp/nginx/body \
 	/var/log/nginx \

@@ -1,0 +1,110 @@
+{
+	"operationId": "updateSentinelRule",
+	"summary": "Update a security rule",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "ruleID",
+			"description": "Rule ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"name": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 100,
+							"example": "Block Tor"
+						},
+						"description": {
+							"type": "string",
+							"maxLength": 500,
+							"example": ""
+						},
+						"enabled": {
+							"type": "boolean",
+							"example": true
+						},
+						"action": {
+							"type": "string",
+							"enum": [
+								"block",
+								"allow",
+								"log"
+							],
+							"example": "block"
+						},
+						"status_code": {
+							"type": "integer",
+							"enum": [
+								401,
+								403,
+								404,
+								410,
+								429,
+								444
+							],
+							"example": 403
+						},
+						"scope": {
+							"type": "string",
+							"enum": [
+								"all",
+								"hosts"
+							],
+							"example": "all"
+						},
+						"host_ids": {
+							"type": "array",
+							"maxItems": 1000,
+							"items": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"example": []
+						},
+						"expression": {
+							"$ref": "../../../../components/sentinel-expression.json"
+						}
+					},
+					"minProperties": 1
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../../components/sentinel-rule-object.json"
+					}
+				}
+			}
+		}
+	}
+}

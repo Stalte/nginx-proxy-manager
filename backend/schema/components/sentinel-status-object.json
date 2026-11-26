@@ -1,0 +1,13 @@
+{
+	"type": "object",
+	"description": "Sentinel status",
+	"additionalProperties": true,
+	"properties": {
+		"deploy": {
+			"type": "object"
+		},
+		"geoip": {
+			"type": "object"
+		}
+	}
+}

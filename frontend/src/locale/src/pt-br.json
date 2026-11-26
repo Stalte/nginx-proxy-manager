@@ -728,6 +728,348 @@
 	"save": {
 		"defaultMessage": "Salvar"
 	},
+	"sentinel": {
+		"defaultMessage": "Sentinel"
+	},
+	"sentinel.action.allow": {
+		"defaultMessage": "Permitir"
+	},
+	"sentinel.action.allow.hint": {
+		"defaultMessage": "Requisições correspondentes ignoram as regras abaixo e o bloqueio de exploits. As listas de acesso continuam valendo."
+	},
+	"sentinel.action.block": {
+		"defaultMessage": "Bloquear"
+	},
+	"sentinel.action.block.hint": {
+		"defaultMessage": "Requisições correspondentes recebem a página de bloqueio com o status escolhido (444 fecha a conexão). As regras seguintes não são verificadas."
+	},
+	"sentinel.action.log": {
+		"defaultMessage": "Apenas registrar"
+	},
+	"sentinel.action.log.hint": {
+		"defaultMessage": "Requisições correspondentes são apenas registradas e depois as próximas regras são verificadas."
+	},
+	"sentinel.description": {
+		"defaultMessage": "Descrição"
+	},
+	"sentinel.every-days": {
+		"defaultMessage": "{n, plural, one {Todo dia} other {A cada # dias}}"
+	},
+	"sentinel.every-hours": {
+		"defaultMessage": "{n, plural, one {A cada hora} other {A cada # horas}}"
+	},
+	"sentinel.every-minutes": {
+		"defaultMessage": "A cada {n} minutos"
+	},
+	"sentinel.field.http.header": {
+		"defaultMessage": "Cabeçalho"
+	},
+	"sentinel.field.http.host": {
+		"defaultMessage": "Nome do host"
+	},
+	"sentinel.field.http.method": {
+		"defaultMessage": "Método"
+	},
+	"sentinel.field.http.path": {
+		"defaultMessage": "Caminho"
+	},
+	"sentinel.field.http.query": {
+		"defaultMessage": "Query string"
+	},
+	"sentinel.field.http.referer": {
+		"defaultMessage": "Referenciador"
+	},
+	"sentinel.field.http.scheme": {
+		"defaultMessage": "Esquema"
+	},
+	"sentinel.field.http.user_agent": {
+		"defaultMessage": "User-Agent"
+	},
+	"sentinel.field.http.user_agent_list": {
+		"defaultMessage": "Lista de User-Agents"
+	},
+	"sentinel.field.ip.country": {
+		"defaultMessage": "País"
+	},
+	"sentinel.field.ip.src": {
+		"defaultMessage": "IP do cliente"
+	},
+	"sentinel.list": {
+		"defaultMessage": "Lista do Sentinel"
+	},
+	"sentinel.list.entries": {
+		"defaultMessage": "Entradas"
+	},
+	"sentinel.list.entries.ip-hint": {
+		"defaultMessage": "Um endereço IP ou rede CIDR por linha, IPv4 ou IPv6 (até 50.000)."
+	},
+	"sentinel.list.entries.ua-hint": {
+		"defaultMessage": "Um trecho de User-Agent por linha (pelo menos 3 caracteres). Uma requisição corresponde quando seu User-Agent contém algum deles, sem diferenciar maiúsculas."
+	},
+	"sentinel.list.fetched": {
+		"defaultMessage": "Última verificação em {date}"
+	},
+	"sentinel.list.kind": {
+		"defaultMessage": "Tipo"
+	},
+	"sentinel.list.kind.ip": {
+		"defaultMessage": "Endereços IP"
+	},
+	"sentinel.list.kind.user_agent": {
+		"defaultMessage": "User-Agents"
+	},
+	"sentinel.list.not-fetched": {
+		"defaultMessage": "Ainda não baixada"
+	},
+	"sentinel.list.refresh": {
+		"defaultMessage": "Atualização"
+	},
+	"sentinel.list.refresh-now": {
+		"defaultMessage": "Atualizar agora"
+	},
+	"sentinel.list.refreshed": {
+		"defaultMessage": "Lista atualizada: {n} entradas"
+	},
+	"sentinel.list.source": {
+		"defaultMessage": "Origem"
+	},
+	"sentinel.list.source.manual": {
+		"defaultMessage": "Digitada"
+	},
+	"sentinel.list.source.url": {
+		"defaultMessage": "De uma URL"
+	},
+	"sentinel.list.url": {
+		"defaultMessage": "URL"
+	},
+	"sentinel.list.url.hint": {
+		"defaultMessage": "Um endereço https:// com uma entrada por linha. Linhas começando com # ou ; são ignoradas. Listas de bloqueio grandes, com milhões de endereços, são aceitas."
+	},
+	"sentinel.lists": {
+		"defaultMessage": "Listas de IP e User-Agent"
+	},
+	"sentinel.lists.empty": {
+		"defaultMessage": "Nenhuma lista ainda. Comece com uma predefinição ou adicione a sua."
+	},
+	"sentinel.lists.hint": {
+		"defaultMessage": "As listas podem ser digitadas ou mantidas atualizadas a partir de uma URL e usadas nas condições das regras."
+	},
+	"sentinel.op.contains": {
+		"defaultMessage": "contém"
+	},
+	"sentinel.op.ends_with": {
+		"defaultMessage": "termina com"
+	},
+	"sentinel.op.eq": {
+		"defaultMessage": "é igual a"
+	},
+	"sentinel.op.exists": {
+		"defaultMessage": "está presente"
+	},
+	"sentinel.op.in": {
+		"defaultMessage": "é um de"
+	},
+	"sentinel.op.matches": {
+		"defaultMessage": "corresponde à regex"
+	},
+	"sentinel.op.ne": {
+		"defaultMessage": "é diferente de"
+	},
+	"sentinel.op.not_contains": {
+		"defaultMessage": "não contém"
+	},
+	"sentinel.op.not_exists": {
+		"defaultMessage": "está ausente"
+	},
+	"sentinel.op.not_in": {
+		"defaultMessage": "não é um de"
+	},
+	"sentinel.op.not_matches": {
+		"defaultMessage": "não corresponde à regex"
+	},
+	"sentinel.op.starts_with": {
+		"defaultMessage": "começa com"
+	},
+	"sentinel.placeholder.http.header": {
+		"defaultMessage": "Valor do cabeçalho"
+	},
+	"sentinel.placeholder.http.host": {
+		"defaultMessage": "ex.: admin.example.com"
+	},
+	"sentinel.placeholder.http.method": {
+		"defaultMessage": "ex.: POST, PUT, DELETE"
+	},
+	"sentinel.placeholder.http.path": {
+		"defaultMessage": "ex.: /wp-login.php"
+	},
+	"sentinel.placeholder.http.query": {
+		"defaultMessage": "ex.: debug=1"
+	},
+	"sentinel.placeholder.http.referer": {
+		"defaultMessage": "ex.: spam.example"
+	},
+	"sentinel.placeholder.http.scheme": {
+		"defaultMessage": "http ou https"
+	},
+	"sentinel.placeholder.http.user_agent": {
+		"defaultMessage": "ex.: python-requests"
+	},
+	"sentinel.placeholder.ip.country": {
+		"defaultMessage": "Códigos de país, ex.: CN, RU"
+	},
+	"sentinel.placeholder.ip.src": {
+		"defaultMessage": "Um endereço ou rede por linha, ex.: 203.0.113.0/24"
+	},
+	"sentinel.preset.bad-bots": {
+		"defaultMessage": "Bots maliciosos (User-Agent)"
+	},
+	"sentinel.preset.bad-bots.description": {
+		"defaultMessage": "User-Agents de scanners e bots maliciosos, do projeto Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.tor": {
+		"defaultMessage": "Nós de saída do Tor"
+	},
+	"sentinel.preset.tor.description": {
+		"defaultMessage": "Endereços dos relays de saída do Tor, publicados pelo Tor Project"
+	},
+	"sentinel.presets": {
+		"defaultMessage": "Predefinições"
+	},
+	"sentinel.rule": {
+		"defaultMessage": "Regra de segurança"
+	},
+	"sentinel.rule.action": {
+		"defaultMessage": "Ação"
+	},
+	"sentinel.rule.add-and": {
+		"defaultMessage": "Adicionar condição"
+	},
+	"sentinel.rule.add-or": {
+		"defaultMessage": "Adicionar grupo OU"
+	},
+	"sentinel.rule.and": {
+		"defaultMessage": "e"
+	},
+	"sentinel.rule.applies-to": {
+		"defaultMessage": "Aplica-se a"
+	},
+	"sentinel.rule.conditions": {
+		"defaultMessage": "Condições"
+	},
+	"sentinel.rule.enabled": {
+		"defaultMessage": "Ativada"
+	},
+	"sentinel.rule.field": {
+		"defaultMessage": "Campo"
+	},
+	"sentinel.rule.header-name": {
+		"defaultMessage": "Nome do cabeçalho, ex.: X-Api-Key"
+	},
+	"sentinel.rule.if": {
+		"defaultMessage": "Se"
+	},
+	"sentinel.rule.ignore-case": {
+		"defaultMessage": "Ignorar maiúsculas"
+	},
+	"sentinel.rule.move-down": {
+		"defaultMessage": "Mover para baixo"
+	},
+	"sentinel.rule.move-up": {
+		"defaultMessage": "Mover para cima"
+	},
+	"sentinel.rule.no-hosts": {
+		"defaultMessage": "Ainda não há hosts de proxy."
+	},
+	"sentinel.rule.no-lists": {
+		"defaultMessage": "Ainda não há listas deste tipo: adicione uma na aba de listas."
+	},
+	"sentinel.rule.operator": {
+		"defaultMessage": "Operador"
+	},
+	"sentinel.rule.or": {
+		"defaultMessage": "ou"
+	},
+	"sentinel.rule.status": {
+		"defaultMessage": "Resposta"
+	},
+	"sentinel.rule.when": {
+		"defaultMessage": "Quando uma requisição corresponder"
+	},
+	"sentinel.rules": {
+		"defaultMessage": "Regras de segurança"
+	},
+	"sentinel.rules.empty": {
+		"defaultMessage": "Nenhuma regra de segurança ainda. Adicione uma para bloquear, permitir ou registrar requisições por IP, país, caminho, cabeçalho ou User-Agent."
+	},
+	"sentinel.rules.hint": {
+		"defaultMessage": "As regras são verificadas de cima para baixo; a primeira regra de bloqueio ou permissão que corresponder decide."
+	},
+	"sentinel.scope.all": {
+		"defaultMessage": "Todos os hosts"
+	},
+	"sentinel.scope.hint": {
+		"defaultMessage": "Regras para todos os hosts também se aplicam aos hosts de redirecionamento."
+	},
+	"sentinel.scope.hosts": {
+		"defaultMessage": "Hosts de proxy selecionados"
+	},
+	"sentinel.scope.n-hosts": {
+		"defaultMessage": "{n, plural, one {# host de proxy} other {# hosts de proxy}}"
+	},
+	"sentinel.status.401": {
+		"defaultMessage": "401 Não autorizado"
+	},
+	"sentinel.status.403": {
+		"defaultMessage": "403 Proibido"
+	},
+	"sentinel.status.404": {
+		"defaultMessage": "404 Não encontrado"
+	},
+	"sentinel.status.410": {
+		"defaultMessage": "410 Removido"
+	},
+	"sentinel.status.429": {
+		"defaultMessage": "429 Requisições demais"
+	},
+	"sentinel.status.444": {
+		"defaultMessage": "444 Fechar conexão"
+	},
+	"sentinel.tile.deploy": {
+		"defaultMessage": "Configuração"
+	},
+	"sentinel.tile.deploy.failed": {
+		"defaultMessage": "Não aplicada"
+	},
+	"sentinel.tile.deploy.ok": {
+		"defaultMessage": "Aplicada"
+	},
+	"sentinel.tile.geoip": {
+		"defaultMessage": "Banco de dados de países"
+	},
+	"sentinel.tile.geoip.downloading": {
+		"defaultMessage": "Baixando"
+	},
+	"sentinel.tile.geoip.none": {
+		"defaultMessage": "Ainda não necessário"
+	},
+	"sentinel.tile.geoip.ready": {
+		"defaultMessage": "Pronto"
+	},
+	"sentinel.tile.lists": {
+		"defaultMessage": "Listas"
+	},
+	"sentinel.tile.lists.failing": {
+		"defaultMessage": "{n, plural, one {# lista não pôde ser atualizada} other {# listas não puderam ser atualizadas}}"
+	},
+	"sentinel.tile.lists.sub": {
+		"defaultMessage": "{n} mantidas atualizadas por URL"
+	},
+	"sentinel.tile.rules": {
+		"defaultMessage": "Regras ativas"
+	},
+	"sentinel.tile.rules.sub": {
+		"defaultMessage": "ativas / total"
+	},
 	"setting": {
 		"defaultMessage": "Configuração"
 	},

@@ -67,6 +67,10 @@
 		{
 			"name": "users",
 			"description": "Endpoints for managing users"
+		},
+		{
+			"name": "sentinel",
+			"description": "Endpoints for the Sentinel security engine: rules and IP / User-Agent lists"
 		}
 	],
 	"paths": {
@@ -370,6 +374,59 @@
 		"/users/{userID}/login": {
 			"post": {
 				"$ref": "./paths/users/userID/login/post.json"
+			}
+		},
+		"/sentinel/status": {
+			"get": {
+				"$ref": "./paths/sentinel/status/get.json"
+			}
+		},
+		"/sentinel/rules": {
+			"get": {
+				"$ref": "./paths/sentinel/rules/get.json"
+			},
+			"post": {
+				"$ref": "./paths/sentinel/rules/post.json"
+			}
+		},
+		"/sentinel/rules/order": {
+			"put": {
+				"$ref": "./paths/sentinel/rules/order/put.json"
+			}
+		},
+		"/sentinel/rules/{ruleID}": {
+			"get": {
+				"$ref": "./paths/sentinel/rules/ruleID/get.json"
+			},
+			"put": {
+				"$ref": "./paths/sentinel/rules/ruleID/put.json"
+			},
+			"delete": {
+				"$ref": "./paths/sentinel/rules/ruleID/delete.json"
+			}
+		},
+		"/sentinel/lists": {
+			"get": {
+				"$ref": "./paths/sentinel/lists/get.json"
+			},
+			"post": {
+				"$ref": "./paths/sentinel/lists/post.json"
+			}
+		},
+		"/sentinel/lists/{listID}": {
+			"get": {
+				"$ref": "./paths/sentinel/lists/listID/get.json"
+			},
+			"put": {
+				"$ref": "./paths/sentinel/lists/listID/put.json"
+			},
+			"delete": {
+				"$ref": "./paths/sentinel/lists/listID/delete.json"
+			}
+		},
+		"/sentinel/lists/{listID}/refresh": {
+			"post": {
+				"$ref": "./paths/sentinel/lists/listID/refresh/post.json"
 			}
 		}
 	}

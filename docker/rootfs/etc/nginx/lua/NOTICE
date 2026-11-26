@@ -1,0 +1,18 @@
+Sentinel security engine
+
+The Lua modules in corvus/ and the page in pages/ come from Corvus AWPG
+(https://github.com/corvus-gateway/corvus):
+
+  Corvus AWPG (Active Web Protection Gateway)
+  Copyright 2026 Jikwang Moon
+  Licensed under the Apache License, Version 2.0 (see LICENSE in this folder).
+
+Changes in this copy:
+- pages/blocked.html: footer text changed.
+- The backend code that writes their configuration (backend/lib/sentinel/) is a
+  JavaScript port of parts of the Corvus control plane (Go), under the same license.
+
+Country lookups can use IP-to-country data from DB-IP (https://db-ip.com), licensed
+under the Creative Commons Attribution 4.0 International License
+(https://creativecommons.org/licenses/by/4.0/). It is downloaded at runtime only
+when a security rule uses a country condition.

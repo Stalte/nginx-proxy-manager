@@ -12,6 +12,9 @@ const allowedIdentical = new Set([
 	"column.ssl",
 	"lets-encrypt",
 	"object.actions-title",
+	"sentinel",
+	"sentinel.field.http.user_agent",
+	"sentinel.list.url",
 	"streams.tcp",
 	"streams.udp",
 ]);
