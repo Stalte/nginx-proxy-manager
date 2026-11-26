@@ -1,0 +1,26 @@
+{
+	"operationId": "getSentinelLists",
+	"summary": "Get all IP and User-Agent lists (without entries)",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-list-list.json"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,57 @@
+{
+	"operationId": "orderSentinelRules",
+	"summary": "Set the evaluation order of the security rules",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"ids": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 200,
+							"items": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"example": [
+								3,
+								1,
+								2
+							]
+						}
+					},
+					"required": [
+						"ids"
+					]
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../../components/sentinel-rule-list.json"
+					}
+				}
+			}
+		}
+	}
+}

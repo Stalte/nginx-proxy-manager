@@ -1,0 +1,7 @@
+{
+	"type": "array",
+	"description": "Sentinel rule list",
+	"items": {
+		"$ref": "./sentinel-rule-object.json"
+	}
+}

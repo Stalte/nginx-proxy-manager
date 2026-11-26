@@ -9,6 +9,7 @@ import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
 import accessListModel from "../models/access_list.js";
 import certificateModel from "../models/certificate.js";
+import internalSentinel from "./sentinel.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,9 +62,13 @@ const internalNginx = {
 					},
 				);
 			})
-			.then((generated) => {
+			.then(async (generated) => {
 				if (!generated) {
 					return;
+				}
+				// A new host, or a changed "Block Common Exploits", must be in Sentinel's rules
+				if (host_type === "proxy_host" || host_type === "redirection_host") {
+					await internalSentinel.syncHosts();
 				}
 				// Test nginx again and update meta with result
 				return internalNginx
@@ -281,6 +286,9 @@ const internalNginx = {
 					host.use_default_location = !internalNginx.advancedConfigHasDefaultLocation(host.advanced_config);
 				}
 			}
+
+			// Sentinel looks hosts up by id: proxy hosts by number, redirection hosts as "r<id>"
+			host.sentinel_key = nice_host_type === "redirection_host" ? `r${Number.parseInt(host.id, 10)}` : null;
 
 			// For redirection hosts, if the scheme is not http or https, set it to $scheme
 			if (

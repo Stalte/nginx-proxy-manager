@@ -728,6 +728,348 @@
 	"save": {
 		"defaultMessage": "Lưu"
 	},
+	"sentinel": {
+		"defaultMessage": "Sentinel"
+	},
+	"sentinel.action.allow": {
+		"defaultMessage": "Cho phép"
+	},
+	"sentinel.action.allow.hint": {
+		"defaultMessage": "Các yêu cầu khớp sẽ bỏ qua các quy tắc bên dưới và chặn khai thác. Danh sách truy cập vẫn được áp dụng."
+	},
+	"sentinel.action.block": {
+		"defaultMessage": "Chặn"
+	},
+	"sentinel.action.block.hint": {
+		"defaultMessage": "Các yêu cầu khớp sẽ nhận trang chặn với mã trạng thái đã chọn (444 đóng kết nối). Các quy tắc sau không được kiểm tra."
+	},
+	"sentinel.action.log": {
+		"defaultMessage": "Chỉ ghi nhật ký"
+	},
+	"sentinel.action.log.hint": {
+		"defaultMessage": "Các yêu cầu khớp chỉ được ghi lại, sau đó các quy tắc tiếp theo được kiểm tra."
+	},
+	"sentinel.description": {
+		"defaultMessage": "Mô tả"
+	},
+	"sentinel.every-days": {
+		"defaultMessage": "{n, plural, other {Mỗi # ngày}}"
+	},
+	"sentinel.every-hours": {
+		"defaultMessage": "{n, plural, other {Mỗi # giờ}}"
+	},
+	"sentinel.every-minutes": {
+		"defaultMessage": "Mỗi {n} phút"
+	},
+	"sentinel.field.http.header": {
+		"defaultMessage": "Tiêu đề"
+	},
+	"sentinel.field.http.host": {
+		"defaultMessage": "Tên máy chủ"
+	},
+	"sentinel.field.http.method": {
+		"defaultMessage": "Phương thức"
+	},
+	"sentinel.field.http.path": {
+		"defaultMessage": "Đường dẫn"
+	},
+	"sentinel.field.http.query": {
+		"defaultMessage": "Chuỗi truy vấn"
+	},
+	"sentinel.field.http.referer": {
+		"defaultMessage": "Trang giới thiệu"
+	},
+	"sentinel.field.http.scheme": {
+		"defaultMessage": "Giao thức"
+	},
+	"sentinel.field.http.user_agent": {
+		"defaultMessage": "User-Agent"
+	},
+	"sentinel.field.http.user_agent_list": {
+		"defaultMessage": "Danh sách User-Agent"
+	},
+	"sentinel.field.ip.country": {
+		"defaultMessage": "Quốc gia"
+	},
+	"sentinel.field.ip.src": {
+		"defaultMessage": "IP máy khách"
+	},
+	"sentinel.list": {
+		"defaultMessage": "Danh sách Sentinel"
+	},
+	"sentinel.list.entries": {
+		"defaultMessage": "Mục"
+	},
+	"sentinel.list.entries.ip-hint": {
+		"defaultMessage": "Mỗi dòng một địa chỉ IP hoặc mạng CIDR, IPv4 hoặc IPv6 (tối đa 50.000)."
+	},
+	"sentinel.list.entries.ua-hint": {
+		"defaultMessage": "Mỗi dòng một đoạn User-Agent (ít nhất 3 ký tự). Yêu cầu khớp khi User-Agent của nó chứa bất kỳ đoạn nào, không phân biệt hoa thường."
+	},
+	"sentinel.list.fetched": {
+		"defaultMessage": "Kiểm tra lần cuối {date}"
+	},
+	"sentinel.list.kind": {
+		"defaultMessage": "Loại"
+	},
+	"sentinel.list.kind.ip": {
+		"defaultMessage": "Địa chỉ IP"
+	},
+	"sentinel.list.kind.user_agent": {
+		"defaultMessage": "Các User-Agent"
+	},
+	"sentinel.list.not-fetched": {
+		"defaultMessage": "Chưa tải xuống"
+	},
+	"sentinel.list.refresh": {
+		"defaultMessage": "Làm mới"
+	},
+	"sentinel.list.refresh-now": {
+		"defaultMessage": "Làm mới ngay"
+	},
+	"sentinel.list.refreshed": {
+		"defaultMessage": "Đã làm mới danh sách: {n} mục"
+	},
+	"sentinel.list.source": {
+		"defaultMessage": "Nguồn"
+	},
+	"sentinel.list.source.manual": {
+		"defaultMessage": "Nhập thủ công"
+	},
+	"sentinel.list.source.url": {
+		"defaultMessage": "Từ một URL"
+	},
+	"sentinel.list.url": {
+		"defaultMessage": "URL"
+	},
+	"sentinel.list.url.hint": {
+		"defaultMessage": "Một địa chỉ https:// với mỗi dòng một mục. Các dòng bắt đầu bằng # hoặc ; được bỏ qua. Danh sách chặn lớn với hàng triệu địa chỉ vẫn được hỗ trợ."
+	},
+	"sentinel.lists": {
+		"defaultMessage": "Danh sách IP và User-Agent"
+	},
+	"sentinel.lists.empty": {
+		"defaultMessage": "Chưa có danh sách nào. Bắt đầu từ một mẫu có sẵn hoặc thêm danh sách của bạn."
+	},
+	"sentinel.lists.hint": {
+		"defaultMessage": "Danh sách có thể nhập thủ công hoặc tự cập nhật từ một URL, và dùng trong điều kiện của quy tắc."
+	},
+	"sentinel.op.contains": {
+		"defaultMessage": "chứa"
+	},
+	"sentinel.op.ends_with": {
+		"defaultMessage": "kết thúc bằng"
+	},
+	"sentinel.op.eq": {
+		"defaultMessage": "bằng"
+	},
+	"sentinel.op.exists": {
+		"defaultMessage": "có mặt"
+	},
+	"sentinel.op.in": {
+		"defaultMessage": "là một trong"
+	},
+	"sentinel.op.matches": {
+		"defaultMessage": "khớp biểu thức chính quy"
+	},
+	"sentinel.op.ne": {
+		"defaultMessage": "không bằng"
+	},
+	"sentinel.op.not_contains": {
+		"defaultMessage": "không chứa"
+	},
+	"sentinel.op.not_exists": {
+		"defaultMessage": "bị thiếu"
+	},
+	"sentinel.op.not_in": {
+		"defaultMessage": "không phải một trong"
+	},
+	"sentinel.op.not_matches": {
+		"defaultMessage": "không khớp biểu thức chính quy"
+	},
+	"sentinel.op.starts_with": {
+		"defaultMessage": "bắt đầu bằng"
+	},
+	"sentinel.placeholder.http.header": {
+		"defaultMessage": "Giá trị tiêu đề"
+	},
+	"sentinel.placeholder.http.host": {
+		"defaultMessage": "vd. admin.example.com"
+	},
+	"sentinel.placeholder.http.method": {
+		"defaultMessage": "vd. POST, PUT, DELETE"
+	},
+	"sentinel.placeholder.http.path": {
+		"defaultMessage": "vd. /wp-login.php"
+	},
+	"sentinel.placeholder.http.query": {
+		"defaultMessage": "vd. debug=1"
+	},
+	"sentinel.placeholder.http.referer": {
+		"defaultMessage": "vd. spam.example"
+	},
+	"sentinel.placeholder.http.scheme": {
+		"defaultMessage": "http hoặc https"
+	},
+	"sentinel.placeholder.http.user_agent": {
+		"defaultMessage": "vd. python-requests"
+	},
+	"sentinel.placeholder.ip.country": {
+		"defaultMessage": "Mã quốc gia, vd. CN, RU"
+	},
+	"sentinel.placeholder.ip.src": {
+		"defaultMessage": "Mỗi dòng một địa chỉ hoặc mạng, vd. 203.0.113.0/24"
+	},
+	"sentinel.preset.bad-bots": {
+		"defaultMessage": "Bot xấu (User-Agent)"
+	},
+	"sentinel.preset.bad-bots.description": {
+		"defaultMessage": "User-Agent của các trình quét và bot xấu, từ dự án Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.tor": {
+		"defaultMessage": "Nút thoát Tor"
+	},
+	"sentinel.preset.tor.description": {
+		"defaultMessage": "Địa chỉ các relay thoát của Tor, do Tor Project công bố"
+	},
+	"sentinel.presets": {
+		"defaultMessage": "Mẫu có sẵn"
+	},
+	"sentinel.rule": {
+		"defaultMessage": "Quy tắc bảo mật"
+	},
+	"sentinel.rule.action": {
+		"defaultMessage": "Hành động"
+	},
+	"sentinel.rule.add-and": {
+		"defaultMessage": "Thêm điều kiện"
+	},
+	"sentinel.rule.add-or": {
+		"defaultMessage": "Thêm nhóm HOẶC"
+	},
+	"sentinel.rule.and": {
+		"defaultMessage": "và"
+	},
+	"sentinel.rule.applies-to": {
+		"defaultMessage": "Áp dụng cho"
+	},
+	"sentinel.rule.conditions": {
+		"defaultMessage": "Điều kiện"
+	},
+	"sentinel.rule.enabled": {
+		"defaultMessage": "Đã bật"
+	},
+	"sentinel.rule.field": {
+		"defaultMessage": "Trường"
+	},
+	"sentinel.rule.header-name": {
+		"defaultMessage": "Tên tiêu đề, vd. X-Api-Key"
+	},
+	"sentinel.rule.if": {
+		"defaultMessage": "Nếu"
+	},
+	"sentinel.rule.ignore-case": {
+		"defaultMessage": "Không phân biệt hoa thường"
+	},
+	"sentinel.rule.move-down": {
+		"defaultMessage": "Chuyển xuống"
+	},
+	"sentinel.rule.move-up": {
+		"defaultMessage": "Chuyển lên"
+	},
+	"sentinel.rule.no-hosts": {
+		"defaultMessage": "Chưa có máy chủ proxy nào."
+	},
+	"sentinel.rule.no-lists": {
+		"defaultMessage": "Chưa có danh sách loại này: hãy thêm trong thẻ danh sách."
+	},
+	"sentinel.rule.operator": {
+		"defaultMessage": "Toán tử"
+	},
+	"sentinel.rule.or": {
+		"defaultMessage": "hoặc"
+	},
+	"sentinel.rule.status": {
+		"defaultMessage": "Phản hồi"
+	},
+	"sentinel.rule.when": {
+		"defaultMessage": "Khi một yêu cầu khớp"
+	},
+	"sentinel.rules": {
+		"defaultMessage": "Quy tắc bảo mật"
+	},
+	"sentinel.rules.empty": {
+		"defaultMessage": "Chưa có quy tắc bảo mật nào. Thêm một quy tắc để chặn, cho phép hoặc ghi nhật ký yêu cầu theo IP, quốc gia, đường dẫn, tiêu đề hoặc User-Agent."
+	},
+	"sentinel.rules.hint": {
+		"defaultMessage": "Các quy tắc được kiểm tra từ trên xuống; quy tắc chặn hoặc cho phép đầu tiên khớp sẽ quyết định."
+	},
+	"sentinel.scope.all": {
+		"defaultMessage": "Tất cả máy chủ"
+	},
+	"sentinel.scope.hint": {
+		"defaultMessage": "Quy tắc cho tất cả máy chủ cũng áp dụng cho máy chủ chuyển hướng."
+	},
+	"sentinel.scope.hosts": {
+		"defaultMessage": "Các máy chủ proxy đã chọn"
+	},
+	"sentinel.scope.n-hosts": {
+		"defaultMessage": "{n, plural, other {# máy chủ proxy}}"
+	},
+	"sentinel.status.401": {
+		"defaultMessage": "401 Chưa xác thực"
+	},
+	"sentinel.status.403": {
+		"defaultMessage": "403 Bị cấm"
+	},
+	"sentinel.status.404": {
+		"defaultMessage": "404 Không tìm thấy"
+	},
+	"sentinel.status.410": {
+		"defaultMessage": "410 Đã bị xóa"
+	},
+	"sentinel.status.429": {
+		"defaultMessage": "429 Quá nhiều yêu cầu"
+	},
+	"sentinel.status.444": {
+		"defaultMessage": "444 Đóng kết nối"
+	},
+	"sentinel.tile.deploy": {
+		"defaultMessage": "Cấu hình"
+	},
+	"sentinel.tile.deploy.failed": {
+		"defaultMessage": "Chưa áp dụng"
+	},
+	"sentinel.tile.deploy.ok": {
+		"defaultMessage": "Đã áp dụng"
+	},
+	"sentinel.tile.geoip": {
+		"defaultMessage": "Cơ sở dữ liệu quốc gia"
+	},
+	"sentinel.tile.geoip.downloading": {
+		"defaultMessage": "Đang tải xuống"
+	},
+	"sentinel.tile.geoip.none": {
+		"defaultMessage": "Chưa cần"
+	},
+	"sentinel.tile.geoip.ready": {
+		"defaultMessage": "Sẵn sàng"
+	},
+	"sentinel.tile.lists": {
+		"defaultMessage": "Danh sách"
+	},
+	"sentinel.tile.lists.failing": {
+		"defaultMessage": "{n, plural, other {# danh sách không thể làm mới}}"
+	},
+	"sentinel.tile.lists.sub": {
+		"defaultMessage": "{n} danh sách tự cập nhật từ URL"
+	},
+	"sentinel.tile.rules": {
+		"defaultMessage": "Quy tắc đang hoạt động"
+	},
+	"sentinel.tile.rules.sub": {
+		"defaultMessage": "đã bật / tổng"
+	},
 	"setting": {
 		"defaultMessage": "Cài đặt"
 	},

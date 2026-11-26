@@ -1,0 +1,4 @@
+The modules in this folder are a JavaScript port of parts of Corvus AWPG
+(https://github.com/corvus-gateway/corvus), Copyright 2026 Jikwang Moon, licensed under
+the Apache License, Version 2.0. A copy of the license is in
+docker/rootfs/etc/nginx/lua/LICENSE; see docker/rootfs/etc/nginx/lua/NOTICE.

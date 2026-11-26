@@ -1,0 +1,110 @@
+{
+	"type": "object",
+	"description": "Sentinel IP or User-Agent list",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"name",
+		"description",
+		"kind",
+		"source_url",
+		"refresh_s",
+		"item_count",
+		"data_hash",
+		"fetched_on",
+		"changed_on",
+		"fetch_error",
+		"meta"
+	],
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"owner_user_id": {
+			"$ref": "../common.json#/properties/user_id"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 64,
+			"example": "Tor exit nodes"
+		},
+		"description": {
+			"type": "string",
+			"maxLength": 500,
+			"example": ""
+		},
+		"kind": {
+			"type": "string",
+			"enum": [
+				"ip",
+				"user_agent"
+			],
+			"example": "ip"
+		},
+		"source_url": {
+			"type": "string",
+			"maxLength": 2048,
+			"description": "https:// URL to keep the list up to date from (empty: entries edited by hand)",
+			"example": "https://check.torproject.org/torbulkexitlist"
+		},
+		"refresh_s": {
+			"type": "integer",
+			"minimum": 300,
+			"maximum": 604800,
+			"example": 3600
+		},
+		"items": {
+			"type": "array",
+			"maxItems": 50000,
+			"items": {
+				"type": "string",
+				"maxLength": 1024
+			},
+			"description": "Entries of a list edited by hand",
+			"example": []
+		},
+		"item_count": {
+			"type": "integer",
+			"example": 1200
+		},
+		"data_hash": {
+			"type": "string",
+			"example": ""
+		},
+		"fetched_on": {
+			"type": [
+				"string",
+				"null"
+			],
+			"example": null
+		},
+		"changed_on": {
+			"type": [
+				"string",
+				"null"
+			],
+			"example": null
+		},
+		"fetch_error": {
+			"type": "string",
+			"description": "Last refresh error or warning",
+			"example": ""
+		},
+		"meta": {
+			"type": "object"
+		}
+	}
+}

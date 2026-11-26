@@ -1,0 +1,101 @@
+{
+	"type": "object",
+	"description": "Sentinel security rule",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"created_on",
+		"modified_on",
+		"owner_user_id",
+		"name",
+		"description",
+		"enabled",
+		"position",
+		"action",
+		"status_code",
+		"scope",
+		"host_ids",
+		"expression",
+		"meta"
+	],
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"owner_user_id": {
+			"$ref": "../common.json#/properties/user_id"
+		},
+		"is_deleted": {
+			"type": "boolean"
+		},
+		"position": {
+			"type": "integer",
+			"example": 1
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 100,
+			"example": "Block Tor"
+		},
+		"description": {
+			"type": "string",
+			"maxLength": 500,
+			"example": ""
+		},
+		"enabled": {
+			"type": "boolean",
+			"example": true
+		},
+		"action": {
+			"type": "string",
+			"enum": [
+				"block",
+				"allow",
+				"log"
+			],
+			"example": "block"
+		},
+		"status_code": {
+			"type": "integer",
+			"enum": [
+				401,
+				403,
+				404,
+				410,
+				429,
+				444
+			],
+			"example": 403
+		},
+		"scope": {
+			"type": "string",
+			"enum": [
+				"all",
+				"hosts"
+			],
+			"example": "all"
+		},
+		"host_ids": {
+			"type": "array",
+			"maxItems": 1000,
+			"items": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"example": []
+		},
+		"expression": {
+			"$ref": "./sentinel-expression.json"
+		},
+		"meta": {
+			"type": "object"
+		}
+	}
+}

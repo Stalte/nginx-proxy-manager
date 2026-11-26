@@ -3,6 +3,7 @@
 import app from "./app.js";
 import internalCertificate from "./internal/certificate.js";
 import internalIpRanges from "./internal/ip_ranges.js";
+import internalSentinel from "./internal/sentinel.js";
 import { global as logger } from "./logger.js";
 import { migrateUp } from "./migrate.js";
 import { getCompiledSchema } from "./schema/index.js";
@@ -26,6 +27,9 @@ async function appStart() {
 		})
 		.then(() => {
 			internalCertificate.initTimer();
+			internalSentinel.init().catch((err) => {
+				logger.error("Sentinel startup failed:", err.message);
+			});
 			if (IP_RANGES_FETCH_ENABLED) {
 				internalIpRanges.initTimer();
 			}

@@ -728,6 +728,348 @@
 	"save": {
 		"defaultMessage": "Salvesta"
 	},
+	"sentinel": {
+		"defaultMessage": "Sentinel"
+	},
+	"sentinel.action.allow": {
+		"defaultMessage": "Luba"
+	},
+	"sentinel.action.allow.hint": {
+		"defaultMessage": "Sobivad päringud jätavad allpool olevad reeglid ja rünnakutõrje vahele. Juurdepääsuloendid kehtivad endiselt."
+	},
+	"sentinel.action.block": {
+		"defaultMessage": "Blokeeri"
+	},
+	"sentinel.action.block.hint": {
+		"defaultMessage": "Sobivad päringud saavad blokeerimislehe valitud olekukoodiga (444 sulgeb ühenduse). Järgmisi reegleid ei kontrollita."
+	},
+	"sentinel.action.log": {
+		"defaultMessage": "Ainult logi"
+	},
+	"sentinel.action.log.hint": {
+		"defaultMessage": "Sobivad päringud ainult salvestatakse, seejärel kontrollitakse järgmisi reegleid."
+	},
+	"sentinel.description": {
+		"defaultMessage": "Kirjeldus"
+	},
+	"sentinel.every-days": {
+		"defaultMessage": "{n, plural, one {Iga päev} other {Iga # päeva järel}}"
+	},
+	"sentinel.every-hours": {
+		"defaultMessage": "{n, plural, one {Iga tund} other {Iga # tunni järel}}"
+	},
+	"sentinel.every-minutes": {
+		"defaultMessage": "Iga {n} minuti järel"
+	},
+	"sentinel.field.http.header": {
+		"defaultMessage": "Päis"
+	},
+	"sentinel.field.http.host": {
+		"defaultMessage": "Hosti nimi"
+	},
+	"sentinel.field.http.method": {
+		"defaultMessage": "Meetod"
+	},
+	"sentinel.field.http.path": {
+		"defaultMessage": "Tee"
+	},
+	"sentinel.field.http.query": {
+		"defaultMessage": "Päringustring"
+	},
+	"sentinel.field.http.referer": {
+		"defaultMessage": "Viitaja"
+	},
+	"sentinel.field.http.scheme": {
+		"defaultMessage": "Skeem"
+	},
+	"sentinel.field.http.user_agent": {
+		"defaultMessage": "User-Agent"
+	},
+	"sentinel.field.http.user_agent_list": {
+		"defaultMessage": "User-Agenti loend"
+	},
+	"sentinel.field.ip.country": {
+		"defaultMessage": "Riik"
+	},
+	"sentinel.field.ip.src": {
+		"defaultMessage": "Kliendi IP"
+	},
+	"sentinel.list": {
+		"defaultMessage": "Sentineli loend"
+	},
+	"sentinel.list.entries": {
+		"defaultMessage": "Kirjed"
+	},
+	"sentinel.list.entries.ip-hint": {
+		"defaultMessage": "Üks IP-aadress või CIDR-võrk rea kohta, IPv4 või IPv6 (kuni 50 000)."
+	},
+	"sentinel.list.entries.ua-hint": {
+		"defaultMessage": "Üks User-Agenti fragment rea kohta (vähemalt 3 märki). Päring sobib, kui selle User-Agent sisaldab mõnda neist, tõstetundetult."
+	},
+	"sentinel.list.fetched": {
+		"defaultMessage": "Viimati kontrollitud {date}"
+	},
+	"sentinel.list.kind": {
+		"defaultMessage": "Liik"
+	},
+	"sentinel.list.kind.ip": {
+		"defaultMessage": "IP-aadressid"
+	},
+	"sentinel.list.kind.user_agent": {
+		"defaultMessage": "User-Agentid"
+	},
+	"sentinel.list.not-fetched": {
+		"defaultMessage": "Pole veel alla laaditud"
+	},
+	"sentinel.list.refresh": {
+		"defaultMessage": "Värskendamine"
+	},
+	"sentinel.list.refresh-now": {
+		"defaultMessage": "Värskenda kohe"
+	},
+	"sentinel.list.refreshed": {
+		"defaultMessage": "Loend värskendatud: {n} kirjet"
+	},
+	"sentinel.list.source": {
+		"defaultMessage": "Allikas"
+	},
+	"sentinel.list.source.manual": {
+		"defaultMessage": "Käsitsi sisestatud"
+	},
+	"sentinel.list.source.url": {
+		"defaultMessage": "URL-ilt"
+	},
+	"sentinel.list.url": {
+		"defaultMessage": "URL"
+	},
+	"sentinel.list.url.hint": {
+		"defaultMessage": "https:// aadress, kus on üks kirje rea kohta. Märgiga # või ; algavaid ridu eiratakse. Ka miljonite aadressidega suured blokeerimisloendid sobivad."
+	},
+	"sentinel.lists": {
+		"defaultMessage": "IP- ja User-Agenti loendid"
+	},
+	"sentinel.lists.empty": {
+		"defaultMessage": "Loendeid veel pole. Alusta eelseadistusest või lisa oma."
+	},
+	"sentinel.lists.hint": {
+		"defaultMessage": "Loendeid saab sisestada käsitsi või hoida URL-i kaudu ajakohasena ning kasutada reeglite tingimustes."
+	},
+	"sentinel.op.contains": {
+		"defaultMessage": "sisaldab"
+	},
+	"sentinel.op.ends_with": {
+		"defaultMessage": "lõpeb"
+	},
+	"sentinel.op.eq": {
+		"defaultMessage": "võrdub"
+	},
+	"sentinel.op.exists": {
+		"defaultMessage": "on olemas"
+	},
+	"sentinel.op.in": {
+		"defaultMessage": "on üks järgmistest"
+	},
+	"sentinel.op.matches": {
+		"defaultMessage": "vastab regulaaravaldisele"
+	},
+	"sentinel.op.ne": {
+		"defaultMessage": "ei võrdu"
+	},
+	"sentinel.op.not_contains": {
+		"defaultMessage": "ei sisalda"
+	},
+	"sentinel.op.not_exists": {
+		"defaultMessage": "puudub"
+	},
+	"sentinel.op.not_in": {
+		"defaultMessage": "ei ole üks järgmistest"
+	},
+	"sentinel.op.not_matches": {
+		"defaultMessage": "ei vasta regulaaravaldisele"
+	},
+	"sentinel.op.starts_with": {
+		"defaultMessage": "algab"
+	},
+	"sentinel.placeholder.http.header": {
+		"defaultMessage": "Päise väärtus"
+	},
+	"sentinel.placeholder.http.host": {
+		"defaultMessage": "nt admin.example.com"
+	},
+	"sentinel.placeholder.http.method": {
+		"defaultMessage": "nt POST, PUT, DELETE"
+	},
+	"sentinel.placeholder.http.path": {
+		"defaultMessage": "nt /wp-login.php"
+	},
+	"sentinel.placeholder.http.query": {
+		"defaultMessage": "nt debug=1"
+	},
+	"sentinel.placeholder.http.referer": {
+		"defaultMessage": "nt spam.example"
+	},
+	"sentinel.placeholder.http.scheme": {
+		"defaultMessage": "http või https"
+	},
+	"sentinel.placeholder.http.user_agent": {
+		"defaultMessage": "nt python-requests"
+	},
+	"sentinel.placeholder.ip.country": {
+		"defaultMessage": "Riigikoodid, nt CN, RU"
+	},
+	"sentinel.placeholder.ip.src": {
+		"defaultMessage": "Üks aadress või võrk rea kohta, nt 203.0.113.0/24"
+	},
+	"sentinel.preset.bad-bots": {
+		"defaultMessage": "Pahatahtlikud robotid (User-Agent)"
+	},
+	"sentinel.preset.bad-bots.description": {
+		"defaultMessage": "Skännerite ja pahatahtlike robotite User-Agentid projektist Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.tor": {
+		"defaultMessage": "Tori väljundsõlmed"
+	},
+	"sentinel.preset.tor.description": {
+		"defaultMessage": "Tori väljundreleede aadressid, avaldanud Tor Project"
+	},
+	"sentinel.presets": {
+		"defaultMessage": "Eelseadistused"
+	},
+	"sentinel.rule": {
+		"defaultMessage": "Turvareegel"
+	},
+	"sentinel.rule.action": {
+		"defaultMessage": "Toiming"
+	},
+	"sentinel.rule.add-and": {
+		"defaultMessage": "Lisa tingimus"
+	},
+	"sentinel.rule.add-or": {
+		"defaultMessage": "Lisa VÕI-rühm"
+	},
+	"sentinel.rule.and": {
+		"defaultMessage": "ja"
+	},
+	"sentinel.rule.applies-to": {
+		"defaultMessage": "Kehtib"
+	},
+	"sentinel.rule.conditions": {
+		"defaultMessage": "Tingimused"
+	},
+	"sentinel.rule.enabled": {
+		"defaultMessage": "Lubatud"
+	},
+	"sentinel.rule.field": {
+		"defaultMessage": "Väli"
+	},
+	"sentinel.rule.header-name": {
+		"defaultMessage": "Päise nimi, nt X-Api-Key"
+	},
+	"sentinel.rule.if": {
+		"defaultMessage": "Kui"
+	},
+	"sentinel.rule.ignore-case": {
+		"defaultMessage": "Ära erista suurtähti"
+	},
+	"sentinel.rule.move-down": {
+		"defaultMessage": "Liiguta alla"
+	},
+	"sentinel.rule.move-up": {
+		"defaultMessage": "Liiguta üles"
+	},
+	"sentinel.rule.no-hosts": {
+		"defaultMessage": "Proksihoste veel pole."
+	},
+	"sentinel.rule.no-lists": {
+		"defaultMessage": "Seda liiki loendeid veel pole: lisa üks loendite vahekaardil."
+	},
+	"sentinel.rule.operator": {
+		"defaultMessage": "Operaator"
+	},
+	"sentinel.rule.or": {
+		"defaultMessage": "või"
+	},
+	"sentinel.rule.status": {
+		"defaultMessage": "Vastus"
+	},
+	"sentinel.rule.when": {
+		"defaultMessage": "Kui päring sobib"
+	},
+	"sentinel.rules": {
+		"defaultMessage": "Turvareeglid"
+	},
+	"sentinel.rules.empty": {
+		"defaultMessage": "Turvareegleid veel pole. Lisa üks, et blokeerida, lubada või logida päringuid IP, riigi, tee, päise või User-Agenti järgi."
+	},
+	"sentinel.rules.hint": {
+		"defaultMessage": "Reegleid kontrollitakse ülevalt alla; otsustab esimene sobiv blokeerimis- või lubamisreegel."
+	},
+	"sentinel.scope.all": {
+		"defaultMessage": "Kõik hostid"
+	},
+	"sentinel.scope.hint": {
+		"defaultMessage": "Kõigi hostide reeglid kehtivad ka ümbersuunamishostidele."
+	},
+	"sentinel.scope.hosts": {
+		"defaultMessage": "Valitud proksihostid"
+	},
+	"sentinel.scope.n-hosts": {
+		"defaultMessage": "{n, plural, one {# proksihost} other {# proksihosti}}"
+	},
+	"sentinel.status.401": {
+		"defaultMessage": "401 Autoriseerimata"
+	},
+	"sentinel.status.403": {
+		"defaultMessage": "403 Keelatud"
+	},
+	"sentinel.status.404": {
+		"defaultMessage": "404 Ei leitud"
+	},
+	"sentinel.status.410": {
+		"defaultMessage": "410 Kadunud"
+	},
+	"sentinel.status.429": {
+		"defaultMessage": "429 Liiga palju päringuid"
+	},
+	"sentinel.status.444": {
+		"defaultMessage": "444 Sulge ühendus"
+	},
+	"sentinel.tile.deploy": {
+		"defaultMessage": "Konfiguratsioon"
+	},
+	"sentinel.tile.deploy.failed": {
+		"defaultMessage": "Pole rakendatud"
+	},
+	"sentinel.tile.deploy.ok": {
+		"defaultMessage": "Rakendatud"
+	},
+	"sentinel.tile.geoip": {
+		"defaultMessage": "Riikide andmebaas"
+	},
+	"sentinel.tile.geoip.downloading": {
+		"defaultMessage": "Allalaadimine"
+	},
+	"sentinel.tile.geoip.none": {
+		"defaultMessage": "Pole veel vaja"
+	},
+	"sentinel.tile.geoip.ready": {
+		"defaultMessage": "Valmis"
+	},
+	"sentinel.tile.lists": {
+		"defaultMessage": "Loendid"
+	},
+	"sentinel.tile.lists.failing": {
+		"defaultMessage": "{n, plural, one {# loendit ei õnnestunud värskendada} other {# loendit ei õnnestunud värskendada}}"
+	},
+	"sentinel.tile.lists.sub": {
+		"defaultMessage": "{n} hoitakse URL-ilt ajakohasena"
+	},
+	"sentinel.tile.rules": {
+		"defaultMessage": "Aktiivsed reeglid"
+	},
+	"sentinel.tile.rules.sub": {
+		"defaultMessage": "lubatud / kokku"
+	},
 	"setting": {
 		"defaultMessage": "Seade"
 	},

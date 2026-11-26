@@ -1,0 +1,70 @@
+{
+	"type": "object",
+	"description": "Sentinel rule condition",
+	"additionalProperties": false,
+	"required": [
+		"field",
+		"operator"
+	],
+	"properties": {
+		"field": {
+			"type": "string",
+			"enum": [
+				"ip.src",
+				"ip.country",
+				"http.method",
+				"http.scheme",
+				"http.host",
+				"http.path",
+				"http.query",
+				"http.user_agent",
+				"http.user_agent_list",
+				"http.referer",
+				"http.header"
+			],
+			"example": "ip.src"
+		},
+		"operator": {
+			"type": "string",
+			"enum": [
+				"eq",
+				"ne",
+				"contains",
+				"not_contains",
+				"starts_with",
+				"ends_with",
+				"matches",
+				"not_matches",
+				"in",
+				"not_in",
+				"exists",
+				"not_exists"
+			],
+			"example": "in"
+		},
+		"name": {
+			"type": "string",
+			"maxLength": 64,
+			"description": "Header name (field http.header)",
+			"example": "x-api-key"
+		},
+		"value": {
+			"type": "array",
+			"maxItems": 1000,
+			"items": {
+				"type": "string",
+				"maxLength": 1024
+			},
+			"description": "Values; IP and User-Agent lists are referenced as \"list:<id>\"",
+			"example": [
+				"203.0.113.0/24",
+				"list:2"
+			]
+		},
+		"ci": {
+			"type": "boolean",
+			"description": "Case-insensitive string comparison",
+			"example": false
+		}
+	}
+}
