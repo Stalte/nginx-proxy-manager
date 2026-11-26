@@ -1,0 +1,35 @@
+{
+	"type": "object",
+	"description": "Browser challenge settings",
+	"additionalProperties": false,
+	"properties": {
+		"mode": {
+			"type": "string",
+			"enum": [
+				"js",
+				"cookie"
+			],
+			"example": "js"
+		},
+		"difficulty": {
+			"type": "integer",
+			"minimum": 12,
+			"maximum": 24,
+			"example": 16
+		},
+		"ttl": {
+			"type": "integer",
+			"minimum": 300,
+			"maximum": 604800,
+			"example": 86400
+		},
+		"bind": {
+			"type": "string",
+			"enum": [
+				"ip",
+				"ip_ua"
+			],
+			"example": "ip"
+		}
+	}
+}

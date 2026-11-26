@@ -56,8 +56,8 @@ function _M.set_secrets(cur, prev)
 end
 
 -- init_by_lua (via corvus/rules.lua).
-function _M.init()
-  if _M.set_secrets(os.getenv("CORVUS_WR_SECRET"), os.getenv("CORVUS_WR_SECRET_PREV")) then return end
+function _M.init(secret)
+  if _M.set_secrets(secret or os.getenv("CORVUS_WR_SECRET"), os.getenv("CORVUS_WR_SECRET_PREV")) then return end
   -- without the secret, a random per-start key: sessions then end with the next restart
   local rrandom = require "resty.random"
   _M.set_secrets(crypto.to_hex(rrandom.bytes(32, true) or rrandom.bytes(32)))

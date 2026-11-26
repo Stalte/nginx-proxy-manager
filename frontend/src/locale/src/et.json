@@ -743,14 +743,131 @@
 	"sentinel.action.block.hint": {
 		"defaultMessage": "Sobivad päringud saavad blokeerimislehe valitud olekukoodiga (444 sulgeb ühenduse). Järgmisi reegleid ei kontrollita."
 	},
+	"sentinel.action.challenge": {
+		"defaultMessage": "Kontrolli"
+	},
+	"sentinel.action.challenge.hint": {
+		"defaultMessage": "Sobivad külastajad peavad esmalt läbima brauserikontrolli. Selle läbinud külastajad liiguvad edasi järgmiste reeglite juurde."
+	},
 	"sentinel.action.log": {
 		"defaultMessage": "Ainult logi"
 	},
 	"sentinel.action.log.hint": {
 		"defaultMessage": "Sobivad päringud ainult salvestatakse, seejärel kontrollitakse järgmisi reegleid."
 	},
+	"sentinel.alerts": {
+		"defaultMessage": "Teavitused"
+	},
+	"sentinel.alerts.enabled": {
+		"defaultMessage": "Saada teavitusi"
+	},
+	"sentinel.alerts.hint": {
+		"defaultMessage": "Saa sõnum, kui hosti rünnakurežiim lülitub sisse või välja."
+	},
+	"sentinel.alerts.last-failed": {
+		"defaultMessage": "Viimast teavitust ei õnnestunud saata: {error}"
+	},
+	"sentinel.alerts.test": {
+		"defaultMessage": "Saada test"
+	},
+	"sentinel.alerts.test-sent": {
+		"defaultMessage": "Testteavitus saadetud"
+	},
+	"sentinel.alerts.token": {
+		"defaultMessage": "Luba (valikuline)"
+	},
+	"sentinel.alerts.token.kept": {
+		"defaultMessage": "Salvestatud, jäta tühjaks, et see alles jätta"
+	},
+	"sentinel.alerts.type": {
+		"defaultMessage": "Teenus"
+	},
+	"sentinel.alerts.type.discord": {
+		"defaultMessage": "Discordi veebikonks"
+	},
+	"sentinel.alerts.type.gotify": {
+		"defaultMessage": "Gotify"
+	},
+	"sentinel.alerts.type.ntfy": {
+		"defaultMessage": "ntfy teema"
+	},
+	"sentinel.alerts.type.slack": {
+		"defaultMessage": "Slacki veebikonks"
+	},
+	"sentinel.alerts.type.webhook": {
+		"defaultMessage": "Üldine veebikonks (JSON)"
+	},
+	"sentinel.alerts.url.discord": {
+		"defaultMessage": "https://discord.com/api/webhooks/..."
+	},
+	"sentinel.alerts.url.gotify": {
+		"defaultMessage": "https://gotify.example.com/message"
+	},
+	"sentinel.alerts.url.ntfy": {
+		"defaultMessage": "https://ntfy.sh/sinu-teema"
+	},
+	"sentinel.alerts.url.slack": {
+		"defaultMessage": "https://hooks.slack.com/services/..."
+	},
+	"sentinel.alerts.url.webhook": {
+		"defaultMessage": "https://example.com/hooks/npm"
+	},
+	"sentinel.challenge.bind-ua": {
+		"defaultMessage": "Seo pääs ka brauseriga"
+	},
+	"sentinel.challenge.bits.12": {
+		"defaultMessage": "Väga lihtne (12 bitti)"
+	},
+	"sentinel.challenge.bits.14": {
+		"defaultMessage": "Lihtne (14 bitti)"
+	},
+	"sentinel.challenge.bits.16": {
+		"defaultMessage": "Tavaline (16 bitti)"
+	},
+	"sentinel.challenge.bits.18": {
+		"defaultMessage": "Raskem (18 bitti)"
+	},
+	"sentinel.challenge.bits.20": {
+		"defaultMessage": "Raske (20 bitti)"
+	},
+	"sentinel.challenge.bits.22": {
+		"defaultMessage": "Väga raske (22 bitti)"
+	},
+	"sentinel.challenge.bits.24": {
+		"defaultMessage": "Äärmuslik (24 bitti)"
+	},
+	"sentinel.challenge.difficulty": {
+		"defaultMessage": "Raskus"
+	},
+	"sentinel.challenge.mode": {
+		"defaultMessage": "Kontroll"
+	},
+	"sentinel.challenge.mode.cookie": {
+		"defaultMessage": "Ainult küpsis"
+	},
+	"sentinel.challenge.mode.cookie.hint": {
+		"defaultMessage": "Leht saadab tagasi ainult allkirjastatud loa. Peatab kliendid, mis vorme ja küpsiseid ei käsitle."
+	},
+	"sentinel.challenge.mode.js": {
+		"defaultMessage": "JavaScripti ülesanne"
+	},
+	"sentinel.challenge.mode.js.hint": {
+		"defaultMessage": "Brauser lahendab väikese ülesande, tavaliselt umbes sekundiga. Peatab robotid, mis JavaScripti ei käivita."
+	},
+	"sentinel.challenge.ttl": {
+		"defaultMessage": "Pääs kehtib"
+	},
 	"sentinel.description": {
 		"defaultMessage": "Kirjeldus"
+	},
+	"sentinel.duration.days": {
+		"defaultMessage": "{n, plural, one {# päev} other {# päeva}}"
+	},
+	"sentinel.duration.hours": {
+		"defaultMessage": "{n, plural, one {# tund} other {# tundi}}"
+	},
+	"sentinel.duration.minutes": {
+		"defaultMessage": "{n, plural, one {# minut} other {# minutit}}"
 	},
 	"sentinel.every-days": {
 		"defaultMessage": "{n, plural, one {Iga päev} other {Iga # päeva järel}}"
@@ -1069,6 +1186,90 @@
 	},
 	"sentinel.tile.rules.sub": {
 		"defaultMessage": "lubatud / kokku"
+	},
+	"sentinel.under-attack": {
+		"defaultMessage": "Rünnakurežiim"
+	},
+	"sentinel.under-attack.auto-summary": {
+		"defaultMessage": "Üle {rps} päringu/s või {pct}% blokeeritud"
+	},
+	"sentinel.under-attack.banner": {
+		"defaultMessage": "{n, plural, one {Rünnakurežiim on sees # hostil: külastajad peavad läbima brauserikontrolli.} other {Rünnakurežiim on sees # hostil: külastajad peavad läbima brauserikontrolli.}}"
+	},
+	"sentinel.under-attack.blocked-pct": {
+		"defaultMessage": "Blokeeritud osa (%)"
+	},
+	"sentinel.under-attack.challenge": {
+		"defaultMessage": "Brauserikontroll"
+	},
+	"sentinel.under-attack.duration": {
+		"defaultMessage": "Aktiveerimisperiood (s)"
+	},
+	"sentinel.under-attack.event.off": {
+		"defaultMessage": "Tagasi normaalseks"
+	},
+	"sentinel.under-attack.event.on": {
+		"defaultMessage": "Lülitus sisse"
+	},
+	"sentinel.under-attack.event.stopped": {
+		"defaultMessage": "Lõpetas administraator"
+	},
+	"sentinel.under-attack.events": {
+		"defaultMessage": "Hiljutine tegevus"
+	},
+	"sentinel.under-attack.hint": {
+		"defaultMessage": "Kontrolli proksihosti iga külastajat kogu aeg või automaatselt, kui liiklust on tavalisest rohkem. Sinu enda võrku (127.0.0.0/8) ei kontrollita kunagi."
+	},
+	"sentinel.under-attack.mode": {
+		"defaultMessage": "Režiim"
+	},
+	"sentinel.under-attack.mode.auto": {
+		"defaultMessage": "Automaatne"
+	},
+	"sentinel.under-attack.mode.auto.hint": {
+		"defaultMessage": "Lülitub ise sisse, kui liiklus ületab allolevad piirid, ja uuesti välja, kui see on aktiveerimisperioodi jooksul olnud tavaline."
+	},
+	"sentinel.under-attack.mode.off": {
+		"defaultMessage": "Väljas"
+	},
+	"sentinel.under-attack.mode.off.hint": {
+		"defaultMessage": "Külastajaid kontrollivad ainult kontrollireeglid."
+	},
+	"sentinel.under-attack.mode.on": {
+		"defaultMessage": "Alati sees"
+	},
+	"sentinel.under-attack.mode.on.hint": {
+		"defaultMessage": "Iga külastaja peab enne saidile jõudmist läbima brauserikontrolli."
+	},
+	"sentinel.under-attack.rps": {
+		"defaultMessage": "Päringuid sekundis"
+	},
+	"sentinel.under-attack.state.active": {
+		"defaultMessage": "Kontrollib külastajaid"
+	},
+	"sentinel.under-attack.state.since": {
+		"defaultMessage": "Alates {date}"
+	},
+	"sentinel.under-attack.state.watching": {
+		"defaultMessage": "Jälgib liiklust"
+	},
+	"sentinel.under-attack.stop": {
+		"defaultMessage": "Lõpeta kohe"
+	},
+	"sentinel.under-attack.stopped": {
+		"defaultMessage": "Rünnakurežiim lõpetati"
+	},
+	"sentinel.under-attack.thresholds": {
+		"defaultMessage": "Automaatsed piirid"
+	},
+	"sentinel.under-attack.thresholds.hint": {
+		"defaultMessage": "Režiim lülitub sisse, kui päringute sagedus või Sentineli blokeeritud päringute osa ületab oma piiri (osa arvestatakse ainult vähemalt 50 päringu korral; 0 lülitab selle välja)."
+	},
+	"sentinel.under-attack.view": {
+		"defaultMessage": "Näita"
+	},
+	"sentinel.under-attack.window": {
+		"defaultMessage": "Mõõdetud ajavahemik (s)"
 	},
 	"setting": {
 		"defaultMessage": "Seade"

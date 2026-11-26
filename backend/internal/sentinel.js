@@ -4,18 +4,21 @@ import { compile, PATHS } from "../lib/sentinel/compile.js";
 import { fetchFeed } from "../lib/sentinel/feeds.js";
 import * as geoip from "../lib/sentinel/geoip.js";
 import { cleanup as cleanupLists, writeFile as writeListFile } from "../lib/sentinel/ipset.js";
+import { ensureSecrets } from "../lib/sentinel/secrets.js";
 import * as validate from "../lib/sentinel/validate.js";
 import { sentinel as logger } from "../logger.js";
 import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
+import hostModel from "../models/sentinel_host.js";
 import listModel from "../models/sentinel_list.js";
 import ruleModel from "../models/sentinel_rule.js";
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
+import internalUnderAttack from "./sentinel-underattack.js";
 
 // Bumped when the per-host Sentinel template changes, so existing host configs are
 // written again once at startup.
-const HOST_TEMPLATE_VERSION = 1;
+const HOST_TEMPLATE_VERSION = 2;
 const HOST_TEMPLATE_MARKER = `${PATHS.dir}/.host-template-version`;
 const FEED_TICK_MS = 60 * 1000;
 const FEED_RETRY_MS = 15 * 60 * 1000;
@@ -109,7 +112,9 @@ const internalSentinel = {
 	 * @returns {Promise<Object>}
 	 */
 	writeRules: async () => {
-		const [rules, lists, proxyHosts, redirectionHosts] = await Promise.all([
+		fs.mkdirSync(PATHS.dir, { recursive: true });
+		ensureSecrets(PATHS.secrets);
+		const [rules, lists, proxyHosts, redirectionHosts, hostSettings] = await Promise.all([
 			ruleModel
 				.query()
 				.where("is_deleted", 0)
@@ -117,9 +122,15 @@ const internalSentinel = {
 			listModel.query().where("is_deleted", 0),
 			proxyHostModel.query().where("is_deleted", 0).select("id", "enabled", "block_exploits"),
 			redirectionHostModel.query().where("is_deleted", 0).select("id", "enabled", "block_exploits"),
+			hostModel.query(),
 		]);
-		const { config, listHashes, usesCountry } = compile({ rules, lists, proxyHosts, redirectionHosts });
-		fs.mkdirSync(PATHS.dir, { recursive: true });
+		const { config, listHashes, usesCountry } = compile({
+			rules,
+			lists,
+			proxyHosts,
+			redirectionHosts,
+			hostSettings,
+		});
 		const tmp = `${PATHS.rules}.tmp`;
 		fs.writeFileSync(tmp, JSON.stringify(config));
 		fs.renameSync(tmp, PATHS.rules);
@@ -170,6 +181,7 @@ const internalSentinel = {
 		} catch (err) {
 			logger.error(`Initial deployment failed: ${err.message}`);
 		}
+		internalUnderAttack.start();
 		if (!feedTimer) {
 			setTimeout(() => internalSentinel.refreshDueFeeds(), 20 * 1000);
 			feedTimer = setInterval(() => internalSentinel.refreshDueFeeds(), FEED_TICK_MS);
@@ -295,6 +307,7 @@ const internalSentinel = {
 			enabled: before.enabled,
 			action: before.action,
 			status_code: before.status_code,
+			challenge: before.challenge,
 			scope: before.scope,
 			host_ids: before.host_ids,
 			expression: before.expression,
@@ -610,6 +623,20 @@ const internalSentinel = {
 	geoLastTry: 0,
 	geoError: "",
 
+	// ------------------------------------------------------------------ under attack
+
+	getUnderAttack: (access) => internalUnderAttack.list(access),
+	setUnderAttack: (access, hostId, data) =>
+		internalUnderAttack.update(access, hostId, data, (change, undo) => internalSentinel.apply(change, undo)),
+	deactivateUnderAttack: (access, hostId) => internalUnderAttack.deactivate(access, hostId),
+	underAttackEvents: async (access) => {
+		await access.can("sentinel:list");
+		return internalUnderAttack.events();
+	},
+	getAlerts: (access) => internalUnderAttack.getAlerts(access),
+	setAlerts: (access, data) => internalUnderAttack.setAlerts(access, data),
+	testAlert: (access) => internalUnderAttack.testAlert(access),
+
 	// ------------------------------------------------------------------ status
 
 	status: async (access) => {
@@ -617,6 +644,10 @@ const internalSentinel = {
 		return {
 			deploy: { ...lastDeploy },
 			geoip: { ...geoip.status(PATHS.geo), downloading: geoRunning, error: internalSentinel.geoError },
+			under_attack: {
+				active: (await internalUnderAttack.list(access)).filter((h) => h.active).length,
+				sync: internalUnderAttack.syncStatus(),
+			},
 		};
 	},
 };

@@ -1,0 +1,39 @@
+{
+	"operationId": "deactivateSentinelUnderAttack",
+	"summary": "End an automatic under attack activation now",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "hostID",
+			"description": "Proxy host ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"type": "boolean"
+					}
+				}
+			}
+		}
+	}
+}

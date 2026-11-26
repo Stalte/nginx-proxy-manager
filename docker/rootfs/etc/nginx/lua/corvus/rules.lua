@@ -35,6 +35,7 @@ local tonumber, type, pairs, ipairs = tonumber, type, pairs, ipairs
 
 local _M = {}
 
+local STATUS_KEY     -- status port key (secrets file, see _M.init)
 local HOSTS = {}      -- host id → { rules = {...}, cf = bool, exploits = bool }
 local GEO             -- country range table (see control/internal/geoip)
 local BLOCK_PAGE = "<!doctype html><title>Blocked</title><p>Access denied.</p>"
@@ -295,8 +296,14 @@ function _M.init(path)
   if cfg.login_page then
     LOGIN_PAGE = read_file(cfg.login_page) or LOGIN_PAGE
   end
-  challenge.init()
-  login.init()
+  -- NPM: signing and status keys come from a root-only file written by the backend
+  -- (/data/sentinel/secrets.json) instead of environment variables.
+  local sec = cfg.secrets and read_file(cfg.secrets)
+  sec = sec and cjson.decode(sec)
+  if type(sec) ~= "table" then sec = {} end
+  STATUS_KEY = type(sec.status_key) == "string" and sec.status_key ~= "" and sec.status_key or nil
+  challenge.init(sec.key)
+  login.init(sec.key)
 end
 
 -- ------------------------------------------------------------------ under attack
@@ -454,6 +461,7 @@ local function send_page(tpl, status, vars)
 end
 
 local function deny(status)
+  ngx.ctx.corvus_blocked = true   -- counted as blocked by corvus/traffic.lua
   if status == 444 then return ngx.exit(444) end
   return send_page(BLOCK_PAGE, status)
 end
@@ -833,7 +841,7 @@ end
 -- at the loopback status port. Without a key in the environment every request is
 -- refused. On refusal the response (403) is sent and false returned.
 function _M.status_key_ok()
-  local want = os.getenv("CORVUS_STATUS_KEY")
+  local want = STATUS_KEY or os.getenv("CORVUS_STATUS_KEY")
   local got = ngx.var.http_x_corvus_status_key
   local ok = type(want) == "string" and want ~= "" and type(got) == "string" and #got == #want
   if ok then

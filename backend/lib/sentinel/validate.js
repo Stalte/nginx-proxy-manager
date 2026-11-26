@@ -29,7 +29,7 @@ export const LIMITS = {
 	maxURLLen: 2048,
 };
 
-export const ACTIONS = ["block", "allow", "log"];
+export const ACTIONS = ["block", "allow", "log", "challenge"];
 export const BLOCK_STATUS = [401, 403, 404, 410, 429, 444];
 
 const STRING_OPS = new Set([
@@ -47,6 +47,33 @@ const STRING_OPS = new Set([
 const SET_OPS = new Set(["in", "not_in"]);
 
 // Fields a condition may test: set (in / not_in), str (string operators), exists
+// Browser challenge settings (rule action "challenge" and the "under attack" mode),
+// the ranges of /etc/nginx/lua/corvus/challenge.lua
+export const CHALLENGE = {
+	modes: ["js", "cookie"],
+	binds: ["ip", "ip_ua"],
+	minBits: 12,
+	maxBits: 24,
+	defBits: 16,
+	minTTL: 300,
+	maxTTL: 7 * 86400,
+	defTTL: 86400,
+};
+
+// "Under attack" mode (Corvus control/internal/validate/underattack.go)
+export const UNDER_ATTACK = {
+	modes: ["off", "on", "auto"],
+	defTTL: 3600,
+	defRPS: 200,
+	defBlockedPct: 50,
+	defWindowS: 30,
+	defDurationS: 900,
+	minWindowS: 10,
+	maxWindowS: 600,
+	minDurationS: 60,
+	maxDurationS: 86400,
+};
+
 export const FIELDS = {
 	"ip.src": { set: true },
 	"ip.country": { set: true },
@@ -264,6 +291,7 @@ export const securityRule = (r, listKind, hostExists) => {
 		enabled: r.enabled !== false,
 		action: r.action,
 		status_code: 403,
+		challenge: null,
 		scope: r.scope || "all",
 		host_ids: [],
 		expression: { groups: [] },
@@ -280,6 +308,8 @@ export const securityRule = (r, listKind, hostExists) => {
 			errs.add("status_code", `status code must be one of ${BLOCK_STATUS.join(", ")}`);
 		}
 		out.status_code = sc;
+	} else if (out.action === "challenge") {
+		out.challenge = challengeSettings(r.challenge, errs, "challenge");
 	} else if (!ACTIONS.includes(out.action)) {
 		errs.add("action", `action must be ${ACTIONS.join(", ")}`);
 	}
@@ -460,6 +490,128 @@ export const list = (l) => {
 		}
 	} else {
 		errs.add("kind", "kind must be ip or user_agent");
+	}
+	errs.throwIfAny();
+	return out;
+};
+
+const intIn = (v, def, min, max) => {
+	const n = v === undefined || v === null || v === "" ? def : Number(v);
+	return Number.isInteger(n) && n >= min && n <= max ? n : null;
+};
+
+/**
+ * Normalises browser challenge settings {mode, difficulty, ttl, bind}; problems are
+ * added to errs under prefix.
+ */
+export const challengeSettings = (c, errs, prefix, defTTL = CHALLENGE.defTTL) => {
+	const src = c && typeof c === "object" ? c : {};
+	const out = {
+		mode: src.mode || "js",
+		difficulty: intIn(src.difficulty, CHALLENGE.defBits, CHALLENGE.minBits, CHALLENGE.maxBits),
+		ttl: intIn(src.ttl, defTTL, CHALLENGE.minTTL, CHALLENGE.maxTTL),
+		bind: src.bind || "ip",
+	};
+	if (!CHALLENGE.modes.includes(out.mode)) {
+		errs.add(`${prefix}.mode`, "challenge type must be js or cookie");
+	}
+	if (out.difficulty === null) {
+		errs.add(`${prefix}.difficulty`, `difficulty must be ${CHALLENGE.minBits}-${CHALLENGE.maxBits} bits`);
+	}
+	if (out.ttl === null) {
+		errs.add(`${prefix}.ttl`, "pass lifetime must be 300-604800 seconds (5 minutes to 7 days)");
+	}
+	if (!CHALLENGE.binds.includes(out.bind)) {
+		errs.add(`${prefix}.bind`, "binding must be ip or ip_ua");
+	}
+	return out;
+};
+
+/**
+ * Validates a proxy host's "under attack" settings. Parameters are checked whatever the
+ * mode, so switching modes later never meets a stored value the gateway cannot use.
+ *
+ * @param   {Object} h  {under_attack, config: {mode, difficulty, ttl, bind, rps, blocked_pct, window_s, duration_s}}
+ * @returns {Object}    normalised {under_attack, config}
+ * @throws  {ValidationErrors}
+ */
+export const underAttack = (h) => {
+	const errs = new ValidationErrors();
+	const mode = h?.under_attack || "off";
+	if (!UNDER_ATTACK.modes.includes(mode)) {
+		errs.add("under_attack", "under attack mode must be off, on or auto");
+	}
+	const c = h?.config && typeof h.config === "object" ? h.config : {};
+	const config = challengeSettings(c, errs, "config", UNDER_ATTACK.defTTL);
+	const rps = c.rps === undefined || c.rps === null || c.rps === "" ? UNDER_ATTACK.defRPS : Number(c.rps);
+	if (!Number.isFinite(rps) || rps < 1 || rps > 1e6) {
+		errs.add("config.rps", "requests per second must be 1-1000000");
+	}
+	const pct =
+		c.blocked_pct === undefined || c.blocked_pct === null || c.blocked_pct === ""
+			? UNDER_ATTACK.defBlockedPct
+			: Number(c.blocked_pct);
+	if (!Number.isFinite(pct) || pct < 0 || pct > 100) {
+		errs.add("config.blocked_pct", "blocked share must be 0-100 percent (0 = not used)");
+	}
+	const windowS = intIn(c.window_s, UNDER_ATTACK.defWindowS, UNDER_ATTACK.minWindowS, UNDER_ATTACK.maxWindowS);
+	if (windowS === null) {
+		errs.add(
+			"config.window_s",
+			`measuring window must be ${UNDER_ATTACK.minWindowS}-${UNDER_ATTACK.maxWindowS} seconds`,
+		);
+	}
+	const durationS = intIn(
+		c.duration_s,
+		UNDER_ATTACK.defDurationS,
+		UNDER_ATTACK.minDurationS,
+		UNDER_ATTACK.maxDurationS,
+	);
+	if (durationS === null) {
+		errs.add(
+			"config.duration_s",
+			`activation period must be ${UNDER_ATTACK.minDurationS}-${UNDER_ATTACK.maxDurationS} seconds`,
+		);
+	}
+	errs.throwIfAny();
+	return {
+		under_attack: mode,
+		config: { ...config, rps, blocked_pct: pct, window_s: windowS, duration_s: durationS },
+	};
+};
+
+export const ALERT_TYPES = ["webhook", "discord", "slack", "ntfy", "gotify"];
+
+/**
+ * Validates the alert settings {enabled, type, url, token}. The URL is chosen by an
+ * administrator and may point at a service on the local network (ntfy, Gotify).
+ */
+export const alerts = (a) => {
+	const errs = new ValidationErrors();
+	const out = {
+		enabled: a?.enabled === true,
+		type: a?.type || "webhook",
+		url: String(a?.url ?? "").trim(),
+		token: String(a?.token ?? "").trim(),
+	};
+	if (!ALERT_TYPES.includes(out.type)) {
+		errs.add("type", `type must be one of ${ALERT_TYPES.join(", ")}`);
+	}
+	if (out.url) {
+		let u = null;
+		try {
+			u = new URL(out.url);
+		} catch {
+			// reported below
+		}
+		if (!u || !["http:", "https:"].includes(u.protocol) || out.url.length > LIMITS.maxURLLen) {
+			errs.add("url", "URL must be an http:// or https:// address");
+		}
+	} else if (out.enabled) {
+		errs.add("url", "enter the address alerts are sent to");
+	}
+	if (out.token.length > 256 || CONTROL_RE.test(out.token)) {
+		errs.add("token", "token must be at most 256 characters");
 	}
 	errs.throwIfAny();
 	return out;

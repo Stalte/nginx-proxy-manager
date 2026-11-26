@@ -15,6 +15,7 @@ import { Button, Loading } from "src/components";
 import { useProxyHosts, useSentinelLists, useSentinelRules, useSetSentinelRule } from "src/hooks";
 import { intl, T } from "src/locale";
 import { showObjectSuccess } from "src/notifications";
+import { DEFAULT_CHALLENGE, SentinelChallengeFields } from "./SentinelChallengeFields";
 
 const SET_OPS: SentinelOperator[] = ["in", "not_in"];
 const STRING_OPS: SentinelOperator[] = [
@@ -142,6 +143,7 @@ function RuleForm({ rule, lists, hosts, visible, remove }: FormProps) {
 	const [description, setDescription] = useState(rule?.description || "");
 	const [action, setAction] = useState<SentinelAction>(rule?.action || "block");
 	const [statusCode, setStatusCode] = useState(rule?.statusCode || 403);
+	const [challenge, setChallenge] = useState(rule?.challenge || DEFAULT_CHALLENGE);
 	const [enabled, setEnabled] = useState(rule ? rule.enabled : true);
 	const [scope, setScope] = useState<"all" | "hosts">(rule?.scope || "all");
 	const [hostIds, setHostIds] = useState<number[]>(rule?.hostIds || []);
@@ -176,6 +178,7 @@ function RuleForm({ rule, lists, hosts, visible, remove }: FormProps) {
 			enabled,
 			action,
 			statusCode: action === "block" ? statusCode : 403,
+			challenge: action === "challenge" ? challenge : null,
 			scope,
 			hostIds: scope === "hosts" ? hostIds : [],
 			expression: { groups: groups.map((g) => g.map(toCondition)) },
@@ -279,7 +282,7 @@ function RuleForm({ rule, lists, hosts, visible, remove }: FormProps) {
 								value={action}
 								onChange={(e) => setAction(e.target.value as SentinelAction)}
 							>
-								{(["block", "allow", "log"] as SentinelAction[]).map((a) => (
+								{(["block", "challenge", "allow", "log"] as SentinelAction[]).map((a) => (
 									<option key={a} value={a}>
 										{intl.formatMessage({ id: `sentinel.action.${a}` })}
 									</option>
@@ -308,6 +311,9 @@ function RuleForm({ rule, lists, hosts, visible, remove }: FormProps) {
 					<div className="mb-2 text-secondary small">
 						<T id={`sentinel.action.${action}.hint`} />
 					</div>
+					{action === "challenge" ? (
+						<SentinelChallengeFields idPrefix="sr-ch" value={challenge} onChange={setChallenge} />
+					) : null}
 					<div className="mb-3">
 						<label htmlFor="sr-desc" className="form-label">
 							<T id="sentinel.description" />

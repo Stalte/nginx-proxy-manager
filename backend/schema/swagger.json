@@ -428,6 +428,39 @@
 			"post": {
 				"$ref": "./paths/sentinel/lists/listID/refresh/post.json"
 			}
+		},
+		"/sentinel/under-attack": {
+			"get": {
+				"$ref": "./paths/sentinel/under-attack/get.json"
+			}
+		},
+		"/sentinel/under-attack/events": {
+			"get": {
+				"$ref": "./paths/sentinel/under-attack/events/get.json"
+			}
+		},
+		"/sentinel/under-attack/{hostID}": {
+			"put": {
+				"$ref": "./paths/sentinel/under-attack/hostID/put.json"
+			}
+		},
+		"/sentinel/under-attack/{hostID}/deactivate": {
+			"post": {
+				"$ref": "./paths/sentinel/under-attack/hostID/deactivate/post.json"
+			}
+		},
+		"/sentinel/alerts": {
+			"get": {
+				"$ref": "./paths/sentinel/alerts/get.json"
+			},
+			"put": {
+				"$ref": "./paths/sentinel/alerts/put.json"
+			}
+		},
+		"/sentinel/alerts/test": {
+			"post": {
+				"$ref": "./paths/sentinel/alerts/test/post.json"
+			}
 		}
 	}
 }

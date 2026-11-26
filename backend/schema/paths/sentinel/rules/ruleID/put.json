@@ -53,7 +53,8 @@
 							"enum": [
 								"block",
 								"allow",
-								"log"
+								"log",
+								"challenge"
 							],
 							"example": "block"
 						},
@@ -88,6 +89,16 @@
 						},
 						"expression": {
 							"$ref": "../../../../components/sentinel-expression.json"
+						},
+						"challenge": {
+							"oneOf": [
+								{
+									"type": "null"
+								},
+								{
+									"$ref": "../../../../components/sentinel-challenge.json"
+								}
+							]
 						}
 					},
 					"minProperties": 1

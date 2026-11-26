@@ -58,7 +58,8 @@
 			"enum": [
 				"block",
 				"allow",
-				"log"
+				"log",
+				"challenge"
 			],
 			"example": "block"
 		},
@@ -96,6 +97,16 @@
 		},
 		"meta": {
 			"type": "object"
+		},
+		"challenge": {
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"$ref": "./sentinel-challenge.json"
+				}
+			]
 		}
 	}
 }

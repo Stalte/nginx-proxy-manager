@@ -743,14 +743,131 @@
 	"sentinel.action.block.hint": {
 		"defaultMessage": "Các yêu cầu khớp sẽ nhận trang chặn với mã trạng thái đã chọn (444 đóng kết nối). Các quy tắc sau không được kiểm tra."
 	},
+	"sentinel.action.challenge": {
+		"defaultMessage": "Thử thách"
+	},
+	"sentinel.action.challenge.hint": {
+		"defaultMessage": "Khách truy cập khớp phải vượt qua kiểm tra trình duyệt trước. Khách đã vượt qua sẽ tiếp tục với các quy tắc tiếp theo."
+	},
 	"sentinel.action.log": {
 		"defaultMessage": "Chỉ ghi nhật ký"
 	},
 	"sentinel.action.log.hint": {
 		"defaultMessage": "Các yêu cầu khớp chỉ được ghi lại, sau đó các quy tắc tiếp theo được kiểm tra."
 	},
+	"sentinel.alerts": {
+		"defaultMessage": "Cảnh báo"
+	},
+	"sentinel.alerts.enabled": {
+		"defaultMessage": "Gửi cảnh báo"
+	},
+	"sentinel.alerts.hint": {
+		"defaultMessage": "Nhận thông báo khi chế độ bị tấn công của máy chủ bật hoặc tắt."
+	},
+	"sentinel.alerts.last-failed": {
+		"defaultMessage": "Không gửi được cảnh báo gần nhất: {error}"
+	},
+	"sentinel.alerts.test": {
+		"defaultMessage": "Gửi thử"
+	},
+	"sentinel.alerts.test-sent": {
+		"defaultMessage": "Đã gửi cảnh báo thử"
+	},
+	"sentinel.alerts.token": {
+		"defaultMessage": "Mã thông báo (tùy chọn)"
+	},
+	"sentinel.alerts.token.kept": {
+		"defaultMessage": "Đã lưu, để trống để giữ nguyên"
+	},
+	"sentinel.alerts.type": {
+		"defaultMessage": "Dịch vụ"
+	},
+	"sentinel.alerts.type.discord": {
+		"defaultMessage": "Webhook Discord"
+	},
+	"sentinel.alerts.type.gotify": {
+		"defaultMessage": "Gotify"
+	},
+	"sentinel.alerts.type.ntfy": {
+		"defaultMessage": "Chủ đề ntfy"
+	},
+	"sentinel.alerts.type.slack": {
+		"defaultMessage": "Webhook Slack"
+	},
+	"sentinel.alerts.type.webhook": {
+		"defaultMessage": "Webhook chung (JSON)"
+	},
+	"sentinel.alerts.url.discord": {
+		"defaultMessage": "https://discord.com/api/webhooks/..."
+	},
+	"sentinel.alerts.url.gotify": {
+		"defaultMessage": "https://gotify.example.com/message"
+	},
+	"sentinel.alerts.url.ntfy": {
+		"defaultMessage": "https://ntfy.sh/chu-de-cua-ban"
+	},
+	"sentinel.alerts.url.slack": {
+		"defaultMessage": "https://hooks.slack.com/services/..."
+	},
+	"sentinel.alerts.url.webhook": {
+		"defaultMessage": "https://example.com/hooks/npm"
+	},
+	"sentinel.challenge.bind-ua": {
+		"defaultMessage": "Gắn thêm thẻ vượt qua với trình duyệt"
+	},
+	"sentinel.challenge.bits.12": {
+		"defaultMessage": "Rất dễ (12 bit)"
+	},
+	"sentinel.challenge.bits.14": {
+		"defaultMessage": "Dễ (14 bit)"
+	},
+	"sentinel.challenge.bits.16": {
+		"defaultMessage": "Bình thường (16 bit)"
+	},
+	"sentinel.challenge.bits.18": {
+		"defaultMessage": "Khó hơn (18 bit)"
+	},
+	"sentinel.challenge.bits.20": {
+		"defaultMessage": "Khó (20 bit)"
+	},
+	"sentinel.challenge.bits.22": {
+		"defaultMessage": "Rất khó (22 bit)"
+	},
+	"sentinel.challenge.bits.24": {
+		"defaultMessage": "Cực khó (24 bit)"
+	},
+	"sentinel.challenge.difficulty": {
+		"defaultMessage": "Độ khó"
+	},
+	"sentinel.challenge.mode": {
+		"defaultMessage": "Kiểu kiểm tra"
+	},
+	"sentinel.challenge.mode.cookie": {
+		"defaultMessage": "Chỉ cookie"
+	},
+	"sentinel.challenge.mode.cookie.hint": {
+		"defaultMessage": "Trang chỉ gửi lại một mã đã ký. Chặn các máy khách không xử lý biểu mẫu và cookie."
+	},
+	"sentinel.challenge.mode.js": {
+		"defaultMessage": "Câu đố JavaScript"
+	},
+	"sentinel.challenge.mode.js.hint": {
+		"defaultMessage": "Trình duyệt giải một câu đố nhỏ, thường mất khoảng một giây. Chặn các bot không chạy JavaScript."
+	},
+	"sentinel.challenge.ttl": {
+		"defaultMessage": "Thời hạn vượt qua"
+	},
 	"sentinel.description": {
 		"defaultMessage": "Mô tả"
+	},
+	"sentinel.duration.days": {
+		"defaultMessage": "{n, plural, other {# ngày}}"
+	},
+	"sentinel.duration.hours": {
+		"defaultMessage": "{n, plural, other {# giờ}}"
+	},
+	"sentinel.duration.minutes": {
+		"defaultMessage": "{n, plural, other {# phút}}"
 	},
 	"sentinel.every-days": {
 		"defaultMessage": "{n, plural, other {Mỗi # ngày}}"
@@ -1069,6 +1186,90 @@
 	},
 	"sentinel.tile.rules.sub": {
 		"defaultMessage": "đã bật / tổng"
+	},
+	"sentinel.under-attack": {
+		"defaultMessage": "Chế độ bị tấn công"
+	},
+	"sentinel.under-attack.auto-summary": {
+		"defaultMessage": "Trên {rps} yêu cầu/giây hoặc {pct}% bị chặn"
+	},
+	"sentinel.under-attack.banner": {
+		"defaultMessage": "{n, plural, other {Chế độ bị tấn công đang bật cho # máy chủ: khách truy cập phải vượt qua kiểm tra trình duyệt.}}"
+	},
+	"sentinel.under-attack.blocked-pct": {
+		"defaultMessage": "Tỷ lệ bị chặn (%)"
+	},
+	"sentinel.under-attack.challenge": {
+		"defaultMessage": "Kiểm tra trình duyệt"
+	},
+	"sentinel.under-attack.duration": {
+		"defaultMessage": "Thời gian kích hoạt (giây)"
+	},
+	"sentinel.under-attack.event.off": {
+		"defaultMessage": "Đã trở lại bình thường"
+	},
+	"sentinel.under-attack.event.on": {
+		"defaultMessage": "Đã bật"
+	},
+	"sentinel.under-attack.event.stopped": {
+		"defaultMessage": "Quản trị viên đã kết thúc"
+	},
+	"sentinel.under-attack.events": {
+		"defaultMessage": "Hoạt động gần đây"
+	},
+	"sentinel.under-attack.hint": {
+		"defaultMessage": "Thử thách mọi khách truy cập của máy chủ proxy, luôn luôn hoặc tự động khi lưu lượng cao hơn bình thường. Mạng nội bộ (127.0.0.0/8) không bao giờ bị thử thách."
+	},
+	"sentinel.under-attack.mode": {
+		"defaultMessage": "Chế độ"
+	},
+	"sentinel.under-attack.mode.auto": {
+		"defaultMessage": "Tự động"
+	},
+	"sentinel.under-attack.mode.auto.hint": {
+		"defaultMessage": "Tự bật khi lưu lượng vượt ngưỡng bên dưới và tự tắt khi lưu lượng đã bình thường trong suốt thời gian kích hoạt."
+	},
+	"sentinel.under-attack.mode.off": {
+		"defaultMessage": "Tắt"
+	},
+	"sentinel.under-attack.mode.off.hint": {
+		"defaultMessage": "Khách truy cập chỉ bị thử thách bởi các quy tắc thử thách."
+	},
+	"sentinel.under-attack.mode.on": {
+		"defaultMessage": "Luôn bật"
+	},
+	"sentinel.under-attack.mode.on.hint": {
+		"defaultMessage": "Mọi khách truy cập phải vượt qua kiểm tra trình duyệt trước khi vào trang."
+	},
+	"sentinel.under-attack.rps": {
+		"defaultMessage": "Yêu cầu mỗi giây"
+	},
+	"sentinel.under-attack.state.active": {
+		"defaultMessage": "Đang thử thách khách truy cập"
+	},
+	"sentinel.under-attack.state.since": {
+		"defaultMessage": "Từ {date}"
+	},
+	"sentinel.under-attack.state.watching": {
+		"defaultMessage": "Đang theo dõi lưu lượng"
+	},
+	"sentinel.under-attack.stop": {
+		"defaultMessage": "Kết thúc ngay"
+	},
+	"sentinel.under-attack.stopped": {
+		"defaultMessage": "Đã kết thúc chế độ bị tấn công"
+	},
+	"sentinel.under-attack.thresholds": {
+		"defaultMessage": "Ngưỡng tự động"
+	},
+	"sentinel.under-attack.thresholds.hint": {
+		"defaultMessage": "Chế độ bật khi tốc độ yêu cầu hoặc tỷ lệ yêu cầu bị Sentinel chặn vượt ngưỡng (tỷ lệ chỉ tính khi có ít nhất 50 yêu cầu; 0 để tắt)."
+	},
+	"sentinel.under-attack.view": {
+		"defaultMessage": "Xem"
+	},
+	"sentinel.under-attack.window": {
+		"defaultMessage": "Đo trong (giây)"
 	},
 	"setting": {
 		"defaultMessage": "Cài đặt"

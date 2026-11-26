@@ -1,6 +1,6 @@
 import * as api from "./base";
 
-export type SentinelAction = "block" | "allow" | "log";
+export type SentinelAction = "block" | "allow" | "log" | "challenge";
 export type SentinelField =
 	| "ip.src"
 	| "ip.country"
@@ -35,6 +35,13 @@ export interface SentinelCondition {
 	ci?: boolean;
 }
 
+export interface SentinelChallenge {
+	mode: "js" | "cookie";
+	difficulty: number;
+	ttl: number;
+	bind: "ip" | "ip_ua";
+}
+
 export interface SentinelRule {
 	id: number;
 	createdOn?: string;
@@ -45,6 +52,7 @@ export interface SentinelRule {
 	position?: number;
 	action: SentinelAction;
 	statusCode: number;
+	challenge?: SentinelChallenge | null;
 	scope: "all" | "hosts";
 	hostIds: number[];
 	expression: { groups: SentinelCondition[][] };
@@ -78,6 +86,49 @@ export interface SentinelStatus {
 		downloading: boolean;
 		error: string;
 	};
+	underAttack?: { active: number; sync: { ok: boolean; error: string; at: string | null } };
+}
+
+export type SentinelUnderAttackMode = "off" | "on" | "auto";
+
+export interface SentinelUnderAttackConfig extends SentinelChallenge {
+	rps: number;
+	blockedPct: number;
+	windowS: number;
+	durationS: number;
+}
+
+export interface SentinelUnderAttackHost {
+	proxyHostId: number;
+	domainNames: string[];
+	enabled: boolean;
+	underAttack: SentinelUnderAttackMode;
+	config: SentinelUnderAttackConfig;
+	active: boolean;
+	since: string | null;
+	until: string | null;
+	reason: string;
+}
+
+export interface SentinelUnderAttackEvent {
+	id: number;
+	host: string;
+	on: boolean;
+	manual?: boolean;
+	reason: string;
+	at: string;
+}
+
+export type SentinelAlertType = "webhook" | "discord" | "slack" | "ntfy" | "gotify";
+
+export interface SentinelAlerts {
+	enabled: boolean;
+	type: SentinelAlertType;
+	url: string;
+	token: string;
+	hasToken?: boolean;
+	clearToken?: boolean;
+	last?: { at: string | null; ok: boolean; error: string };
 }
 
 // Condition values are data, not keys: send them as they are (the API client converts
@@ -144,4 +195,39 @@ export async function deleteSentinelList(id: number): Promise<boolean> {
 
 export async function refreshSentinelList(id: number): Promise<SentinelList> {
 	return await api.post({ url: `/sentinel/lists/${id}/refresh` });
+}
+
+export async function getSentinelUnderAttack(): Promise<SentinelUnderAttackHost[]> {
+	return await api.get({ url: "/sentinel/under-attack" });
+}
+
+export async function getSentinelUnderAttackEvents(): Promise<SentinelUnderAttackEvent[]> {
+	return await api.get({ url: "/sentinel/under-attack/events" });
+}
+
+export async function saveSentinelUnderAttack(
+	hostId: number,
+	underAttack: SentinelUnderAttackMode,
+	config: SentinelUnderAttackConfig,
+): Promise<SentinelUnderAttackHost> {
+	return await api.put({ url: `/sentinel/under-attack/${hostId}`, data: { underAttack, config } });
+}
+
+export async function deactivateSentinelUnderAttack(hostId: number): Promise<boolean> {
+	return await api.post({ url: `/sentinel/under-attack/${hostId}/deactivate` });
+}
+
+export async function getSentinelAlerts(): Promise<SentinelAlerts> {
+	return await api.get({ url: "/sentinel/alerts" });
+}
+
+export async function saveSentinelAlerts(a: SentinelAlerts): Promise<SentinelAlerts> {
+	const data: Record<string, unknown> = { enabled: a.enabled, type: a.type, url: a.url };
+	if (a.token) data.token = a.token;
+	if (a.clearToken) data.clearToken = true;
+	return await api.put({ url: "/sentinel/alerts", data });
+}
+
+export async function testSentinelAlerts(): Promise<boolean> {
+	return await api.post({ url: "/sentinel/alerts/test" });
 }

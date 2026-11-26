@@ -1,0 +1,56 @@
+{
+	"type": "object",
+	"description": "Under attack mode of a proxy host",
+	"additionalProperties": false,
+	"required": [
+		"proxy_host_id",
+		"domain_names",
+		"enabled",
+		"under_attack",
+		"config",
+		"active",
+		"since",
+		"until",
+		"reason"
+	],
+	"properties": {
+		"proxy_host_id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"domain_names": {
+			"$ref": "../common.json#/properties/domain_names"
+		},
+		"enabled": {
+			"type": "boolean"
+		},
+		"under_attack": {
+			"type": "string",
+			"enum": [
+				"off",
+				"on",
+				"auto"
+			]
+		},
+		"config": {
+			"$ref": "./sentinel-under-attack-config.json"
+		},
+		"active": {
+			"type": "boolean"
+		},
+		"since": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"until": {
+			"type": [
+				"string",
+				"null"
+			]
+		},
+		"reason": {
+			"type": "string"
+		}
+	}
+}
