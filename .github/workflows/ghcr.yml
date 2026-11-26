@@ -1,0 +1,107 @@
+# Builds the Docker image (amd64 + arm64) and publishes it to the GitHub Container Registry
+# under this repository's owner, e.g. ghcr.io/<owner>/nginx-proxy-manager.
+#
+# Tags pushed:
+#   develop branch  -> latest, develop, <.version>, sha-<short sha>
+#   v* git tags     -> the tag's version (e.g. 2.17.1-sentinel.1)
+#   pull requests   -> built only (not pushed), so a broken change is caught before merge
+#
+# The image is a drop-in replacement for jc21/nginx-proxy-manager: same ports (80, 81, 443)
+# and volumes (/data, /etc/letsencrypt), so an existing container only needs its image changed.
+name: Build and publish image
+
+on:
+  push:
+    branches: [develop]
+    tags: ['v*']
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ghcr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          CI: 'true'
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: |
+          yarn install --frozen-lockfile
+          yarn locale-compile
+          yarn vitest run --no-color
+          yarn build
+
+      - name: Image metadata
+        id: meta
+        run: |
+          owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${owner}/nginx-proxy-manager" >> "$GITHUB_OUTPUT"
+          echo "version=$(cat .version)" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u '+%Y-%m-%d %T UTC')" >> "$GITHUB_OUTPUT"
+
+      - name: Docker tags and labels
+        id: docker
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.meta.outputs.image }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw,value=develop,enable=${{ github.ref == 'refs/heads/develop' }}
+            type=raw,value=${{ steps.meta.outputs.version }},enable=${{ github.ref == 'refs/heads/develop' }}
+            type=sha,prefix=sha-,enable=${{ github.event_name != 'pull_request' }}
+            type=match,pattern=v(.*),group=1
+            type=ref,event=pr
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr.io
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          pull: true
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker.outputs.tags }}
+          labels: ${{ steps.docker.outputs.labels }}
+          build-args: |
+            BUILD_VERSION=${{ steps.meta.outputs.version }}
+            BUILD_COMMIT=${{ steps.meta.outputs.commit }}
+            BUILD_DATE=${{ steps.meta.outputs.date }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
