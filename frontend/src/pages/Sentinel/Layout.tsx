@@ -5,6 +5,7 @@ import { useSentinelLists, useSentinelRules, useSentinelStatus } from "src/hooks
 import { formatDateTime, getLocale, T } from "src/locale";
 import Lists from "./Lists";
 import Rules from "./Rules";
+import UnderAttack from "./UnderAttack";
 
 function Tile({
 	icon,
@@ -40,7 +41,7 @@ function Tile({
 }
 
 export default function Layout() {
-	const [tab, setTab] = useState<"rules" | "lists">("rules");
+	const [tab, setTab] = useState<"rules" | "lists" | "under-attack">("rules");
 	const status = useSentinelStatus({ refetchInterval: 30 * 1000 });
 	const rules = useSentinelRules();
 	const lists = useSentinelLists();
@@ -50,6 +51,7 @@ export default function Layout() {
 	const failing = feeds.filter((l) => l.fetchError && !l.changedOn).length;
 	const deploy = status.data?.deploy;
 	const geo = status.data?.geoip;
+	const attacked = status.data?.underAttack?.active || 0;
 
 	return (
 		<>
@@ -101,6 +103,17 @@ export default function Layout() {
 					sub={geo?.error ? <span className="text-warning">{geo.error}</span> : geo?.attribution}
 				/>
 			</div>
+			{attacked ? (
+				<div className="alert alert-danger mt-3 mb-0 d-flex align-items-center">
+					<IconAlertTriangle size={18} className="me-2" />
+					<span className="me-auto">
+						<T id="sentinel.under-attack.banner" data={{ n: attacked }} />
+					</span>
+					<button type="button" className="btn btn-sm btn-danger" onClick={() => setTab("under-attack")}>
+						<T id="sentinel.under-attack.view" />
+					</button>
+				</div>
+			) : null}
 			{deploy?.ok === false && deploy.error ? (
 				<div className="alert alert-warning mt-3 mb-0">
 					<pre className="m-0 small" style={{ whiteSpace: "pre-wrap" }}>
@@ -130,9 +143,19 @@ export default function Layout() {
 								<T id="sentinel.lists" />
 							</button>
 						</li>
+						<li className="nav-item">
+							<button
+								type="button"
+								className={cn("nav-link", tab === "under-attack" && "active")}
+								onClick={() => setTab("under-attack")}
+							>
+								<T id="sentinel.under-attack" />
+								{attacked ? <span className="badge bg-red text-red-fg ms-2">{attacked}</span> : null}
+							</button>
+						</li>
 					</ul>
 				</div>
-				{tab === "rules" ? <Rules /> : <Lists />}
+				{tab === "rules" ? <Rules /> : tab === "lists" ? <Lists /> : <UnderAttack />}
 			</div>
 		</>
 	);

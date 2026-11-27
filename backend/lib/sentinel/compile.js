@@ -9,7 +9,32 @@ import fs from "node:fs";
 import { sentinel as logger } from "../../logger.js";
 import { encodeNet } from "./ip.js";
 import { checkFile, fromEntries, writeFile } from "./ipset.js";
-import { listRef, securityRule } from "./validate.js";
+import { listRef, securityRule, underAttack } from "./validate.js";
+
+/**
+ * "under_attack" of a host in rules.json, or null when the mode is off (or the stored
+ * settings are invalid). "auto" hosts are challenged only while the backend has pushed
+ * an activation to the gateway (see backend/internal/sentinel-underattack.js).
+ */
+const underAttackConfig = (row) => {
+	if (!row || row.under_attack === "off") {
+		return null;
+	}
+	try {
+		const { under_attack: mode, config } = underAttack(row);
+		if (mode === "off") return null;
+		return {
+			on: mode === "on",
+			mode: config.mode,
+			difficulty: config.difficulty,
+			ttl: config.ttl,
+			bind: config.bind,
+		};
+	} catch (err) {
+		logger.error(`Sentinel under attack settings of proxy host #${row.proxy_host_id} are invalid: ${err.message}`);
+		return null;
+	}
+};
 
 export const PATHS = {
 	dir: "/data/sentinel",
@@ -17,6 +42,9 @@ export const PATHS = {
 	lists: "/data/sentinel/lists",
 	geo: "/data/sentinel/geoip/country.bin",
 	blockPage: "/etc/nginx/lua/pages/blocked.html",
+	challengePage: "/etc/nginx/lua/pages/challenge.html",
+	secrets: "/data/sentinel/secrets.json",
+	underAttack: "/data/sentinel/under-attack.json",
 };
 
 /**
@@ -25,10 +53,11 @@ export const PATHS = {
  * @param   {Object[]} input.lists             list rows
  * @param   {Object[]} input.proxyHosts        {id, enabled, block_exploits}
  * @param   {Object[]} input.redirectionHosts  {id, enabled, block_exploits}
+ * @param   {Object[]} [input.hostSettings]    sentinel_host rows {proxy_host_id, under_attack, config}
  * @param   {Object}   [paths]
  * @returns {{config: Object, listHashes: Set<string>, usesCountry: boolean}}
  */
-export const compile = ({ rules, lists, proxyHosts, redirectionHosts }, paths = PATHS) => {
+export const compile = ({ rules, lists, proxyHosts, redirectionHosts, hostSettings = [] }, paths = PATHS) => {
 	const listById = new Map(lists.map((l) => [Number(l.id), l]));
 	const listKind = (id) => listById.get(id)?.kind || "";
 	const hostIds = new Set(proxyHosts.map((h) => Number(h.id)));
@@ -70,6 +99,13 @@ export const compile = ({ rules, lists, proxyHosts, redirectionHosts }, paths = 
 	if (paths.blockPage && fs.existsSync(paths.blockPage)) {
 		config.block_page = paths.blockPage;
 	}
+	if (paths.challengePage && fs.existsSync(paths.challengePage)) {
+		config.challenge_page = paths.challengePage;
+	}
+	if (paths.secrets && fs.existsSync(paths.secrets)) {
+		config.secrets = paths.secrets;
+	}
+	const settingsByHost = new Map(hostSettings.map((s) => [Number(s.proxy_host_id), s]));
 
 	const scopes = [];
 	for (const row of rules) {
@@ -93,6 +129,9 @@ export const compile = ({ rules, lists, proxyHosts, redirectionHosts }, paths = 
 			continue;
 		}
 		const rj = { id: r.id, action: r.action, status: r.status_code, skip_auth: false, groups: [] };
+		if (r.action === "challenge") {
+			rj.challenge = r.challenge;
+		}
 		for (const g of r.expression.groups) {
 			const cg = [];
 			for (const c of g) {
@@ -139,6 +178,10 @@ export const compile = ({ rules, lists, proxyHosts, redirectionHosts }, paths = 
 		scopes.forEach((sc, i) => {
 			if (sc.all || sc.hosts.has(Number(h.id))) hj.rules.push(i + 1);
 		});
+		const ua = underAttackConfig(settingsByHost.get(Number(h.id)));
+		if (ua) {
+			hj.under_attack = ua;
+		}
 		config.hosts[String(h.id)] = hj;
 	}
 	// redirection hosts get rules that apply to all hosts and exploit blocking

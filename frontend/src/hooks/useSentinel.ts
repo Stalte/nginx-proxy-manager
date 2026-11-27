@@ -1,12 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+	getSentinelAlerts,
 	getSentinelList,
 	getSentinelLists,
 	getSentinelRules,
 	getSentinelStatus,
+	getSentinelUnderAttack,
+	getSentinelUnderAttackEvents,
+	type SentinelAlerts,
 	type SentinelList,
 	type SentinelRule,
 	type SentinelStatus,
+	type SentinelUnderAttackEvent,
+	type SentinelUnderAttackHost,
 	saveSentinelList,
 	saveSentinelRule,
 } from "src/api/backend";
@@ -43,6 +49,30 @@ const useSentinelList = (id: number | "new", options = {}) =>
 		...options,
 	});
 
+const useSentinelUnderAttack = (options = {}) =>
+	useQuery<SentinelUnderAttackHost[], Error>({
+		queryKey: ["sentinel-under-attack"],
+		queryFn: getSentinelUnderAttack,
+		staleTime: 10 * 1000,
+		...options,
+	});
+
+const useSentinelUnderAttackEvents = (options = {}) =>
+	useQuery<SentinelUnderAttackEvent[], Error>({
+		queryKey: ["sentinel-under-attack-events"],
+		queryFn: getSentinelUnderAttackEvents,
+		staleTime: 10 * 1000,
+		...options,
+	});
+
+const useSentinelAlerts = (options = {}) =>
+	useQuery<SentinelAlerts, Error>({
+		queryKey: ["sentinel-alerts"],
+		queryFn: getSentinelAlerts,
+		staleTime: 0,
+		...options,
+	});
+
 const useInvalidateSentinel = () => {
 	const queryClient = useQueryClient();
 	return () => {
@@ -50,6 +80,9 @@ const useInvalidateSentinel = () => {
 		queryClient.invalidateQueries({ queryKey: ["sentinel-lists"] });
 		queryClient.invalidateQueries({ queryKey: ["sentinel-list"] });
 		queryClient.invalidateQueries({ queryKey: ["sentinel-status"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-under-attack"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-under-attack-events"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-alerts"] });
 		queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
 	};
 };
@@ -72,10 +105,13 @@ const useSetSentinelList = () => {
 
 export {
 	useInvalidateSentinel,
+	useSentinelAlerts,
 	useSentinelList,
 	useSentinelLists,
 	useSentinelRules,
 	useSentinelStatus,
+	useSentinelUnderAttack,
+	useSentinelUnderAttackEvents,
 	useSetSentinelList,
 	useSetSentinelRule,
 };

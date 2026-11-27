@@ -42,7 +42,7 @@ class SentinelRule extends Model {
 	}
 
 	static get jsonAttributes() {
-		return ["host_ids", "expression", "meta"];
+		return ["host_ids", "expression", "challenge", "meta"];
 	}
 }
 

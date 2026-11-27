@@ -8,6 +8,9 @@
 		},
 		"geoip": {
 			"type": "object"
+		},
+		"under_attack": {
+			"type": "object"
 		}
 	}
 }

@@ -9,12 +9,20 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
+import { buildRequest, underAttackText } from "../lib/sentinel/alerts.js";
 import { compile } from "../lib/sentinel/compile.js";
 import { parse as parseFeed } from "../lib/sentinel/feeds.js";
 import { CSVParser, encode as encodeGeo, lookup as geoLookup } from "../lib/sentinel/geoip.js";
 import { encodeNet, isPublicIP, normalizeCidrs, parseEntry, parseIPv6 } from "../lib/sentinel/ip.js";
 import { Builder, checkFile, encode, fromEntries, writeFile } from "../lib/sentinel/ipset.js";
-import { feedURL, list as validateList, securityRule } from "../lib/sentinel/validate.js";
+import * as underAttackLogic from "../lib/sentinel/underattack.js";
+import {
+	feedURL,
+	securityRule,
+	alerts as validateAlerts,
+	list as validateList,
+	underAttack as validateUnderAttack,
+} from "../lib/sentinel/validate.js";
 
 const tmpDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "sentinel-test-"));
 
@@ -50,7 +58,16 @@ describe("ip", () => {
 
 	it("tells public addresses from local ones", () => {
 		for (const a of ["8.8.8.8", "2606:4700::1"]) assert.equal(isPublicIP(a), true, a);
-		for (const a of ["10.0.0.1", "127.0.0.1", "192.168.1.1", "100.64.0.1", "::1", "fd00::1", "fe80::1", "::ffff:10.0.0.1"]) {
+		for (const a of [
+			"10.0.0.1",
+			"127.0.0.1",
+			"192.168.1.1",
+			"100.64.0.1",
+			"::1",
+			"fd00::1",
+			"fe80::1",
+			"::ffff:10.0.0.1",
+		]) {
 			assert.equal(isPublicIP(a), false, a);
 		}
 	});
@@ -58,7 +75,15 @@ describe("ip", () => {
 
 describe("ipset", () => {
 	it("merges overlapping and adjacent ranges", () => {
-		const s = fromEntries(["10.0.0.0/8", "10.1.0.0/16", "11.0.0.0/8", "1.2.3.4", "1.2.3.5", "2001:db8::/32", "2001:db9::/32"]);
+		const s = fromEntries([
+			"10.0.0.0/8",
+			"10.1.0.0/16",
+			"11.0.0.0/8",
+			"1.2.3.4",
+			"1.2.3.5",
+			"2001:db8::/32",
+			"2001:db9::/32",
+		]);
 		assert.deepEqual(Array.from(s.v4), [0x01020304, 0x01020305, 0x0a000000, 0x0bffffff]);
 		assert.equal(s.v6.length, 1);
 		assert.equal(s.v6[0][0], 0x20010db8n << 96n);
@@ -151,17 +176,25 @@ describe("rule validation", () => {
 
 	it("rejects an unknown action, status and host", () => {
 		const groups = [[{ field: "http.path", operator: "eq", value: ["/"] }]];
-		assert.throws(() => securityRule({ name: "x", action: "challenge", expression: { groups } }, listKind));
-		assert.throws(() => securityRule({ name: "x", action: "block", status_code: 500, expression: { groups } }, listKind));
+		assert.throws(() => securityRule({ name: "x", action: "redirect", expression: { groups } }, listKind));
 		assert.throws(() =>
-			securityRule({ name: "x", action: "block", scope: "hosts", host_ids: [7], expression: { groups } }, listKind, () => false),
+			securityRule({ name: "x", action: "block", status_code: 500, expression: { groups } }, listKind),
+		);
+		assert.throws(() =>
+			securityRule(
+				{ name: "x", action: "block", scope: "hosts", host_ids: [7], expression: { groups } },
+				listKind,
+				() => false,
+			),
 		);
 	});
 });
 
 describe("list validation", () => {
 	it("accepts lists and normalises entries", () => {
-		assert.deepEqual(validateList({ name: "a", kind: "ip", items: ["1.2.3.4", "1.2.3.4/32"] }).items, ["1.2.3.4/32"]);
+		assert.deepEqual(validateList({ name: "a", kind: "ip", items: ["1.2.3.4", "1.2.3.4/32"] }).items, [
+			"1.2.3.4/32",
+		]);
 		assert.deepEqual(validateList({ name: "a", kind: "user_agent", items: ["Curl", "curl", "sqlmap"] }).items, [
 			"Curl",
 			"sqlmap",
@@ -269,7 +302,13 @@ describe("compile", () => {
 		}
 		assert.deepEqual(g.groups[1][0].v.sort(), ["nikto", "sqlmap"]);
 		assert.equal(h.action, "log");
-		assert.deepEqual(config.hosts["5"], { rules: [1, 2], cf: false, exploits: true, body: "off", body_max: 1048576 });
+		assert.deepEqual(config.hosts["5"], {
+			rules: [1, 2],
+			cf: false,
+			exploits: true,
+			body: "off",
+			body_max: 1048576,
+		});
 		assert.deepEqual(config.hosts["6"].rules, [1]);
 		assert.equal(config.hosts["7"], undefined);
 		assert.deepEqual(config.hosts.r2.rules, [1]);
@@ -325,5 +364,171 @@ describe("geoip", () => {
 		assert.equal(buf.length, 16 + n4 * 6 + n6 * 18);
 		// 8.8.8.0-8.8.9.255 merged into one US range
 		assert.equal(db.v4.filter(([, cc]) => cc === "US").length, 1);
+	});
+});
+
+describe("browser challenge and under attack mode", () => {
+	const groups = [[{ field: "http.path", operator: "eq", value: ["/"] }]];
+
+	it("normalises challenge rules and rejects bad settings", () => {
+		const r = securityRule({ name: "c", action: "challenge", expression: { groups } }, () => "");
+		assert.deepEqual(r.challenge, { mode: "js", difficulty: 16, ttl: 86400, bind: "ip" });
+		const c = securityRule(
+			{ name: "c", action: "challenge", challenge: { mode: "cookie", ttl: 600 }, expression: { groups } },
+			() => "",
+		);
+		assert.equal(c.challenge.mode, "cookie");
+		assert.equal(c.challenge.ttl, 600);
+		assert.equal(securityRule({ name: "b", action: "block", expression: { groups } }, () => "").challenge, null);
+		for (const bad of [{ difficulty: 30 }, { difficulty: 11 }, { ttl: 60 }, { mode: "captcha" }, { bind: "x" }]) {
+			assert.throws(() =>
+				securityRule({ name: "c", action: "challenge", challenge: bad, expression: { groups } }, () => ""),
+			);
+		}
+	});
+
+	it("validates under attack settings with defaults", () => {
+		const d = validateUnderAttack({});
+		assert.equal(d.under_attack, "off");
+		assert.deepEqual(d.config, {
+			mode: "js",
+			difficulty: 16,
+			ttl: 3600,
+			bind: "ip",
+			rps: 200,
+			blocked_pct: 50,
+			window_s: 30,
+			duration_s: 900,
+		});
+		assert.equal(validateUnderAttack({ under_attack: "auto", config: { blocked_pct: 0 } }).config.blocked_pct, 0);
+		for (const bad of [
+			{ under_attack: "maybe" },
+			{ config: { rps: 0 } },
+			{ config: { window_s: 5 } },
+			{ config: { duration_s: 10 } },
+			{ config: { blocked_pct: 101 } },
+		]) {
+			assert.throws(() => validateUnderAttack(bad));
+		}
+	});
+
+	it("compiles challenge rules and host under attack settings", () => {
+		const { config } = compile(
+			{
+				rules: [
+					{
+						id: 3,
+						enabled: true,
+						name: "c",
+						action: "challenge",
+						challenge: { mode: "js", difficulty: 18 },
+						scope: "all",
+						host_ids: [],
+						expression: { groups },
+					},
+				],
+				lists: [],
+				proxyHosts: [
+					{ id: 1, enabled: true },
+					{ id: 2, enabled: true },
+					{ id: 4, enabled: true },
+				],
+				redirectionHosts: [],
+				hostSettings: [
+					{ proxy_host_id: 1, under_attack: "on", config: { mode: "cookie" } },
+					{ proxy_host_id: 2, under_attack: "auto", config: {} },
+					{ proxy_host_id: 4, under_attack: "off", config: {} },
+				],
+			},
+			{ dir: tmpDir(), lists: tmpDir(), geo: "/nonexistent" },
+		);
+		assert.deepEqual(config.rules[0].challenge, { mode: "js", difficulty: 18, ttl: 86400, bind: "ip" });
+		assert.deepEqual(config.hosts["1"].under_attack, {
+			on: true,
+			mode: "cookie",
+			difficulty: 16,
+			ttl: 3600,
+			bind: "ip",
+		});
+		assert.equal(config.hosts["2"].under_attack.on, false);
+		assert.equal(config.hosts["4"].under_attack, undefined);
+	});
+
+	it("activates on high traffic and ends after a quiet period", () => {
+		const cfg = validateUnderAttack({ under_attack: "auto", config: { rps: 10, duration_s: 60 } }).config;
+		const hosts = [{ id: 5, host: "a.example", config: cfg }];
+		const st = underAttackLogic.emptyState();
+		let t = { r: 100, b: 0, secs: 30 };
+		const traffic = () => t;
+
+		// 3.3 requests/s: below the threshold
+		assert.deepEqual(underAttackLogic.evaluate(st, hosts, traffic, 0).transitions, []);
+		t = { r: 600, b: 0, secs: 30 };
+		const on = underAttackLogic.evaluate(st, hosts, traffic, 1000).transitions;
+		assert.equal(on.length, 1);
+		assert.equal(on[0].on, true);
+		assert.match(on[0].reason, /20 requests\/s/);
+		assert.deepEqual(underAttackLogic.payload(st, 2000).hosts, { 5: 61 });
+		// still hot: extended
+		underAttackLogic.evaluate(st, hosts, traffic, 30000);
+		assert.equal(st.active["5"].until, 90000);
+		// quiet, but within the period: stays on
+		t = { r: 10, b: 0, secs: 30 };
+		assert.deepEqual(underAttackLogic.evaluate(st, hosts, traffic, 60000).transitions, []);
+		const off = underAttackLogic.evaluate(st, hosts, traffic, 90000).transitions;
+		assert.equal(off.length, 1);
+		assert.equal(off[0].on, false);
+		assert.deepEqual(underAttackLogic.payload(st, 90000).hosts, {});
+		assert.deepEqual(underAttackLogic.payload(st, 0).exempt, [
+			"7f000000/8",
+			"00000000000000000000000000000001/128",
+		]);
+	});
+
+	it("uses the blocked share only with enough requests, and holds after a manual stop", () => {
+		const cfg = validateUnderAttack({ config: { rps: 1000, blocked_pct: 50, duration_s: 60 } }).config;
+		assert.deepEqual(underAttackLogic.over({ r: 40, b: 40, secs: 30 }, cfg), [false, ""]);
+		assert.equal(underAttackLogic.over({ r: 100, b: 60, secs: 30 }, cfg)[0], true);
+		assert.equal(underAttackLogic.over({ r: 100, b: 60, secs: 30 }, { ...cfg, blocked_pct: 0 })[0], false);
+
+		const hosts = [{ id: 5, host: "a.example", config: cfg }];
+		const st = underAttackLogic.emptyState();
+		const hot = () => ({ r: 100, b: 60, secs: 30 });
+		underAttackLogic.evaluate(st, hosts, hot, 0);
+		const t = underAttackLogic.deactivate(st, 5, 60, 1000);
+		assert.equal(t.manual, true);
+		assert.equal(underAttackLogic.deactivate(st, 5, 60, 1000), null);
+		// held for one period
+		assert.deepEqual(underAttackLogic.evaluate(st, hosts, hot, 30000).transitions, []);
+		assert.equal(underAttackLogic.evaluate(st, hosts, hot, 61000).transitions.length, 1);
+		// host gone: activation ends silently
+		assert.deepEqual(underAttackLogic.evaluate(st, [], hot, 62000), { changed: true, transitions: [] });
+		assert.deepEqual(st.active, {});
+		assert.deepEqual(underAttackLogic.parseState("{bad"), { active: {}, hold: {} });
+	});
+
+	it("formats alerts for each service", () => {
+		const msg = { ...underAttackText({ host: "a.example", on: true, reason: "x", until: 0 }), event: "e" };
+		assert.match(msg.title, /ON: a\.example/);
+		assert.deepEqual(
+			JSON.parse(buildRequest({ type: "discord", url: "https://d" }, msg).init.body).content.split("\n")[0],
+			`**${msg.title}**`,
+		);
+		assert.ok(JSON.parse(buildRequest({ type: "slack", url: "https://s" }, msg).init.body).text);
+		const ntfy = buildRequest({ type: "ntfy", url: "https://n/topic", token: "tk" }, msg).init;
+		assert.equal(ntfy.body, msg.text);
+		assert.equal(ntfy.headers.Authorization, "Bearer tk");
+		assert.equal(
+			buildRequest({ type: "gotify", url: "https://g/message", token: "k" }, msg).init.headers["X-Gotify-Key"],
+			"k",
+		);
+		const hook = JSON.parse(buildRequest({ type: "webhook", url: "https://w" }, msg).init.body);
+		assert.equal(hook.event, "e");
+
+		assert.equal(validateAlerts({}).enabled, false);
+		assert.throws(() => validateAlerts({ enabled: true, url: "" }));
+		assert.throws(() => validateAlerts({ url: "ftp://x" }));
+		assert.throws(() => validateAlerts({ type: "pager" }));
+		assert.equal(validateAlerts({ enabled: true, type: "ntfy", url: "http://10.0.0.2/alerts" }).type, "ntfy");
 	});
 });

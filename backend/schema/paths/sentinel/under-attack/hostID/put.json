@@ -1,0 +1,67 @@
+{
+	"operationId": "updateSentinelUnderAttack",
+	"summary": "Set the under attack mode of a proxy host",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "hostID",
+			"description": "Proxy host ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"under_attack"
+					],
+					"properties": {
+						"under_attack": {
+							"type": "string",
+							"enum": [
+								"off",
+								"on",
+								"auto"
+							]
+						},
+						"config": {
+							"$ref": "../../../../components/sentinel-under-attack-config.json"
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../../components/sentinel-under-attack-object.json"
+					}
+				}
+			}
+		}
+	}
+}

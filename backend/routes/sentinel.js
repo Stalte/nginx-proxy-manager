@@ -180,4 +180,103 @@ router
 		}),
 	);
 
+/**
+ * GET /api/sentinel/under-attack
+ */
+router
+	.route("/under-attack")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.getUnderAttack(res.locals.access));
+		}),
+	);
+
+/**
+ * GET /api/sentinel/under-attack/events
+ */
+router
+	.route("/under-attack/events")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.underAttackEvents(res.locals.access));
+		}),
+	);
+
+/**
+ * PUT /api/sentinel/under-attack/123
+ */
+router
+	.route("/under-attack/:host_id")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.put(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.host_id);
+			const payload = await apiValidator(getValidationSchema("/sentinel/under-attack/{hostID}", "put"), req.body);
+			res.status(200).send(await internalSentinel.setUnderAttack(res.locals.access, id, payload));
+		}),
+	);
+
+/**
+ * POST /api/sentinel/under-attack/123/deactivate
+ */
+router
+	.route("/under-attack/:host_id/deactivate")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.post(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.host_id);
+			res.status(200).send(await internalSentinel.deactivateUnderAttack(res.locals.access, id));
+		}),
+	);
+
+/**
+ * /api/sentinel/alerts
+ */
+router
+	.route("/alerts")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.getAlerts(res.locals.access));
+		}),
+	)
+	.put(
+		handle(async (req, res) => {
+			const payload = await apiValidator(getValidationSchema("/sentinel/alerts", "put"), req.body);
+			res.status(200).send(await internalSentinel.setAlerts(res.locals.access, payload));
+		}),
+	);
+
+/**
+ * POST /api/sentinel/alerts/test
+ */
+router
+	.route("/alerts/test")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.post(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.testAlert(res.locals.access));
+		}),
+	);
+
 export default router;

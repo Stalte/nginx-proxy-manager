@@ -8,7 +8,13 @@ The Lua modules in corvus/ and the page in pages/ come from Corvus AWPG
   Licensed under the Apache License, Version 2.0 (see LICENSE in this folder).
 
 Changes in this copy:
-- pages/blocked.html: footer text changed.
+- pages/blocked.html and pages/challenge.html: footer text changed.
+- corvus/rules.lua, corvus/challenge.lua, corvus/login.lua: the signing and status
+  keys are read from /data/sentinel/secrets.json instead of environment variables,
+  and refused requests are flagged for the traffic counters.
+- corvus/traffic.lua, corvus/host.lua, corvus/hostlog.lua, corvus/verify.lua and the
+  corvus/status-*.lua entry points are new (Nginx Proxy Manager). traffic.lua replaces
+  the Corvus access-log traffic collector for the automatic "under attack" mode.
 - The backend code that writes their configuration (backend/lib/sentinel/) is a
   JavaScript port of parts of the Corvus control plane (Go), under the same license.
 

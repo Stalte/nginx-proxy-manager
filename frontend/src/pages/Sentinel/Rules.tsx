@@ -15,7 +15,7 @@ import { intl, T } from "src/locale";
 import { showDeleteConfirmModal, showSentinelRuleModal } from "src/modals";
 import { showError, showObjectSuccess } from "src/notifications";
 
-const ACTION_COLOR: Record<string, string> = { block: "red", allow: "green", log: "blue" };
+const ACTION_COLOR: Record<string, string> = { block: "red", allow: "green", log: "blue", challenge: "orange" };
 
 const describeCondition = (c: SentinelCondition, lists: SentinelList[]) => {
 	const field =

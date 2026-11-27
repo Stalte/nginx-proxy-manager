@@ -1,0 +1,42 @@
+{
+	"type": "object",
+	"description": "Sentinel alert settings",
+	"additionalProperties": false,
+	"required": [
+		"enabled",
+		"type",
+		"url",
+		"token",
+		"has_token",
+		"last"
+	],
+	"properties": {
+		"enabled": {
+			"type": "boolean"
+		},
+		"type": {
+			"type": "string",
+			"enum": [
+				"webhook",
+				"discord",
+				"slack",
+				"ntfy",
+				"gotify"
+			]
+		},
+		"url": {
+			"type": "string",
+			"maxLength": 2048
+		},
+		"token": {
+			"type": "string",
+			"description": "Always empty in responses"
+		},
+		"has_token": {
+			"type": "boolean"
+		},
+		"last": {
+			"type": "object"
+		}
+	}
+}

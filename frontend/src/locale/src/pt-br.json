@@ -743,14 +743,131 @@
 	"sentinel.action.block.hint": {
 		"defaultMessage": "Requisições correspondentes recebem a página de bloqueio com o status escolhido (444 fecha a conexão). As regras seguintes não são verificadas."
 	},
+	"sentinel.action.challenge": {
+		"defaultMessage": "Desafiar"
+	},
+	"sentinel.action.challenge.hint": {
+		"defaultMessage": "Visitantes correspondentes precisam passar primeiro por uma verificação do navegador. Quem passar segue para as próximas regras."
+	},
 	"sentinel.action.log": {
 		"defaultMessage": "Apenas registrar"
 	},
 	"sentinel.action.log.hint": {
 		"defaultMessage": "Requisições correspondentes são apenas registradas e depois as próximas regras são verificadas."
 	},
+	"sentinel.alerts": {
+		"defaultMessage": "Alertas"
+	},
+	"sentinel.alerts.enabled": {
+		"defaultMessage": "Enviar alertas"
+	},
+	"sentinel.alerts.hint": {
+		"defaultMessage": "Receba uma mensagem quando o modo sob ataque de um host ligar ou desligar."
+	},
+	"sentinel.alerts.last-failed": {
+		"defaultMessage": "Não foi possível enviar o último alerta: {error}"
+	},
+	"sentinel.alerts.test": {
+		"defaultMessage": "Enviar teste"
+	},
+	"sentinel.alerts.test-sent": {
+		"defaultMessage": "Alerta de teste enviado"
+	},
+	"sentinel.alerts.token": {
+		"defaultMessage": "Token (opcional)"
+	},
+	"sentinel.alerts.token.kept": {
+		"defaultMessage": "Salvo, deixe vazio para mantê-lo"
+	},
+	"sentinel.alerts.type": {
+		"defaultMessage": "Serviço"
+	},
+	"sentinel.alerts.type.discord": {
+		"defaultMessage": "Webhook do Discord"
+	},
+	"sentinel.alerts.type.gotify": {
+		"defaultMessage": "Gotify"
+	},
+	"sentinel.alerts.type.ntfy": {
+		"defaultMessage": "Tópico do ntfy"
+	},
+	"sentinel.alerts.type.slack": {
+		"defaultMessage": "Webhook do Slack"
+	},
+	"sentinel.alerts.type.webhook": {
+		"defaultMessage": "Webhook genérico (JSON)"
+	},
+	"sentinel.alerts.url.discord": {
+		"defaultMessage": "https://discord.com/api/webhooks/..."
+	},
+	"sentinel.alerts.url.gotify": {
+		"defaultMessage": "https://gotify.example.com/message"
+	},
+	"sentinel.alerts.url.ntfy": {
+		"defaultMessage": "https://ntfy.sh/seu-topico"
+	},
+	"sentinel.alerts.url.slack": {
+		"defaultMessage": "https://hooks.slack.com/services/..."
+	},
+	"sentinel.alerts.url.webhook": {
+		"defaultMessage": "https://example.com/hooks/npm"
+	},
+	"sentinel.challenge.bind-ua": {
+		"defaultMessage": "Vincular o passe também ao navegador"
+	},
+	"sentinel.challenge.bits.12": {
+		"defaultMessage": "Muito fácil (12 bits)"
+	},
+	"sentinel.challenge.bits.14": {
+		"defaultMessage": "Fácil (14 bits)"
+	},
+	"sentinel.challenge.bits.16": {
+		"defaultMessage": "Normal (16 bits)"
+	},
+	"sentinel.challenge.bits.18": {
+		"defaultMessage": "Mais difícil (18 bits)"
+	},
+	"sentinel.challenge.bits.20": {
+		"defaultMessage": "Difícil (20 bits)"
+	},
+	"sentinel.challenge.bits.22": {
+		"defaultMessage": "Muito difícil (22 bits)"
+	},
+	"sentinel.challenge.bits.24": {
+		"defaultMessage": "Extremo (24 bits)"
+	},
+	"sentinel.challenge.difficulty": {
+		"defaultMessage": "Dificuldade"
+	},
+	"sentinel.challenge.mode": {
+		"defaultMessage": "Verificação"
+	},
+	"sentinel.challenge.mode.cookie": {
+		"defaultMessage": "Somente cookie"
+	},
+	"sentinel.challenge.mode.cookie.hint": {
+		"defaultMessage": "A página apenas devolve um token assinado. Barra clientes que não lidam com formulários e cookies."
+	},
+	"sentinel.challenge.mode.js": {
+		"defaultMessage": "Desafio JavaScript"
+	},
+	"sentinel.challenge.mode.js.hint": {
+		"defaultMessage": "O navegador resolve um pequeno desafio, geralmente em cerca de um segundo. Barra bots que não executam JavaScript."
+	},
+	"sentinel.challenge.ttl": {
+		"defaultMessage": "Passe válido por"
+	},
 	"sentinel.description": {
 		"defaultMessage": "Descrição"
+	},
+	"sentinel.duration.days": {
+		"defaultMessage": "{n, plural, one {# dia} other {# dias}}"
+	},
+	"sentinel.duration.hours": {
+		"defaultMessage": "{n, plural, one {# hora} other {# horas}}"
+	},
+	"sentinel.duration.minutes": {
+		"defaultMessage": "{n, plural, one {# minuto} other {# minutos}}"
 	},
 	"sentinel.every-days": {
 		"defaultMessage": "{n, plural, one {Todo dia} other {A cada # dias}}"
@@ -1069,6 +1186,90 @@
 	},
 	"sentinel.tile.rules.sub": {
 		"defaultMessage": "ativas / total"
+	},
+	"sentinel.under-attack": {
+		"defaultMessage": "Modo sob ataque"
+	},
+	"sentinel.under-attack.auto-summary": {
+		"defaultMessage": "Acima de {rps} requisições/s ou {pct}% bloqueadas"
+	},
+	"sentinel.under-attack.banner": {
+		"defaultMessage": "{n, plural, one {O modo sob ataque está ligado em # host: os visitantes precisam passar pela verificação do navegador.} other {O modo sob ataque está ligado em # hosts: os visitantes precisam passar pela verificação do navegador.}}"
+	},
+	"sentinel.under-attack.blocked-pct": {
+		"defaultMessage": "Parcela bloqueada (%)"
+	},
+	"sentinel.under-attack.challenge": {
+		"defaultMessage": "Verificação do navegador"
+	},
+	"sentinel.under-attack.duration": {
+		"defaultMessage": "Período de ativação (s)"
+	},
+	"sentinel.under-attack.event.off": {
+		"defaultMessage": "De volta ao normal"
+	},
+	"sentinel.under-attack.event.on": {
+		"defaultMessage": "Ligado"
+	},
+	"sentinel.under-attack.event.stopped": {
+		"defaultMessage": "Encerrado por um admin"
+	},
+	"sentinel.under-attack.events": {
+		"defaultMessage": "Atividade recente"
+	},
+	"sentinel.under-attack.hint": {
+		"defaultMessage": "Desafie todos os visitantes de um host de proxy, sempre ou automaticamente quando houver mais tráfego que o normal. Sua própria rede (127.0.0.0/8) nunca é desafiada."
+	},
+	"sentinel.under-attack.mode": {
+		"defaultMessage": "Modo"
+	},
+	"sentinel.under-attack.mode.auto": {
+		"defaultMessage": "Automático"
+	},
+	"sentinel.under-attack.mode.auto.hint": {
+		"defaultMessage": "Liga sozinho quando o tráfego passa dos limites abaixo e desliga quando ele fica normal durante todo o período de ativação."
+	},
+	"sentinel.under-attack.mode.off": {
+		"defaultMessage": "Desligado"
+	},
+	"sentinel.under-attack.mode.off.hint": {
+		"defaultMessage": "Os visitantes só são desafiados pelas regras de desafio."
+	},
+	"sentinel.under-attack.mode.on": {
+		"defaultMessage": "Sempre ligado"
+	},
+	"sentinel.under-attack.mode.on.hint": {
+		"defaultMessage": "Todo visitante precisa passar pela verificação do navegador antes de acessar o site."
+	},
+	"sentinel.under-attack.rps": {
+		"defaultMessage": "Requisições por segundo"
+	},
+	"sentinel.under-attack.state.active": {
+		"defaultMessage": "Desafiando visitantes"
+	},
+	"sentinel.under-attack.state.since": {
+		"defaultMessage": "Desde {date}"
+	},
+	"sentinel.under-attack.state.watching": {
+		"defaultMessage": "Monitorando tráfego"
+	},
+	"sentinel.under-attack.stop": {
+		"defaultMessage": "Encerrar agora"
+	},
+	"sentinel.under-attack.stopped": {
+		"defaultMessage": "Modo sob ataque encerrado"
+	},
+	"sentinel.under-attack.thresholds": {
+		"defaultMessage": "Limites automáticos"
+	},
+	"sentinel.under-attack.thresholds.hint": {
+		"defaultMessage": "O modo liga quando a taxa de requisições ou a parcela de requisições bloqueadas pelo Sentinel passa do limite (a parcela só conta com pelo menos 50 requisições; 0 desativa)."
+	},
+	"sentinel.under-attack.view": {
+		"defaultMessage": "Mostrar"
+	},
+	"sentinel.under-attack.window": {
+		"defaultMessage": "Medido em (s)"
 	},
 	"setting": {
 		"defaultMessage": "Configuração"

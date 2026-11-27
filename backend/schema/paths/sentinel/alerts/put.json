@@ -1,0 +1,65 @@
+{
+	"operationId": "updateSentinelAlerts",
+	"summary": "Change the alert settings",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"enabled": {
+							"type": "boolean"
+						},
+						"type": {
+							"type": "string",
+							"enum": [
+								"webhook",
+								"discord",
+								"slack",
+								"ntfy",
+								"gotify"
+							]
+						},
+						"url": {
+							"type": "string",
+							"maxLength": 2048
+						},
+						"token": {
+							"type": "string",
+							"maxLength": 256,
+							"description": "Leave empty to keep the stored token"
+						},
+						"clear_token": {
+							"type": "boolean"
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-alerts-object.json"
+					}
+				}
+			}
+		}
+	}
+}
