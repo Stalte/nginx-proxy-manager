@@ -461,6 +461,46 @@
 			"post": {
 				"$ref": "./paths/sentinel/alerts/test/post.json"
 			}
+		},
+		"/sentinel/rate-limits": {
+			"get": {
+				"$ref": "./paths/sentinel/rate-limits/get.json"
+			},
+			"post": {
+				"$ref": "./paths/sentinel/rate-limits/post.json"
+			}
+		},
+		"/sentinel/rate-limits/{rateLimitID}": {
+			"get": {
+				"$ref": "./paths/sentinel/rate-limits/rateLimitID/get.json"
+			},
+			"put": {
+				"$ref": "./paths/sentinel/rate-limits/rateLimitID/put.json"
+			},
+			"delete": {
+				"$ref": "./paths/sentinel/rate-limits/rateLimitID/delete.json"
+			}
+		},
+		"/sentinel/bans": {
+			"get": {
+				"$ref": "./paths/sentinel/bans/get.json"
+			},
+			"post": {
+				"$ref": "./paths/sentinel/bans/post.json"
+			}
+		},
+		"/sentinel/bans/{banID}": {
+			"delete": {
+				"$ref": "./paths/sentinel/bans/banID/delete.json"
+			}
+		},
+		"/sentinel/autoban": {
+			"get": {
+				"$ref": "./paths/sentinel/autoban/get.json"
+			},
+			"put": {
+				"$ref": "./paths/sentinel/autoban/put.json"
+			}
 		}
 	}
 }

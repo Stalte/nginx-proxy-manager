@@ -1,0 +1,61 @@
+{
+	"type": "object",
+	"description": "Banned client",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"ip",
+		"reason",
+		"source",
+		"offenses",
+		"created_on",
+		"modified_on",
+		"expires_at",
+		"active"
+	],
+	"properties": {
+		"id": {
+			"$ref": "../common.json#/properties/id"
+		},
+		"ip": {
+			"type": "string",
+			"description": "IPv4 address or IPv6 /64",
+			"example": "203.0.113.7"
+		},
+		"reason": {
+			"type": "string",
+			"example": "31 error responses in 60s (404 x31) on example.com"
+		},
+		"source": {
+			"type": "string",
+			"enum": [
+				"auto",
+				"manual"
+			],
+			"example": "auto"
+		},
+		"offenses": {
+			"type": "integer",
+			"minimum": 0,
+			"example": 1
+		},
+		"created_on": {
+			"$ref": "../common.json#/properties/created_on"
+		},
+		"modified_on": {
+			"$ref": "../common.json#/properties/modified_on"
+		},
+		"expires_at": {
+			"type": [
+				"integer",
+				"null"
+			],
+			"description": "Unix time the ban ends (null: permanent)",
+			"example": 1764240000
+		},
+		"active": {
+			"type": "boolean",
+			"example": true
+		}
+	}
+}

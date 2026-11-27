@@ -812,6 +812,129 @@
 	"sentinel.alerts.url.webhook": {
 		"defaultMessage": "https://example.com/hooks/npm"
 	},
+	"sentinel.autoban": {
+		"defaultMessage": "Automatic bans"
+	},
+	"sentinel.autoban.bad-behaviour": {
+		"defaultMessage": "Error responses"
+	},
+	"sentinel.autoban.bad-behaviour.enabled": {
+		"defaultMessage": "Ban clients that keep getting error responses"
+	},
+	"sentinel.autoban.bad-behaviour.hint": {
+		"defaultMessage": "Catches scanners that probe for files and logins. Counted per client and host."
+	},
+	"sentinel.autoban.codes": {
+		"defaultMessage": "Status codes"
+	},
+	"sentinel.autoban.detections": {
+		"defaultMessage": "Security detections"
+	},
+	"sentinel.autoban.detections.enabled": {
+		"defaultMessage": "Ban clients that Sentinel keeps refusing"
+	},
+	"sentinel.autoban.duration": {
+		"defaultMessage": "First ban (s)"
+	},
+	"sentinel.autoban.enabled": {
+		"defaultMessage": "Ban misbehaving clients automatically"
+	},
+	"sentinel.autoban.escalation": {
+		"defaultMessage": "Ban length"
+	},
+	"sentinel.autoban.escalation.hint": {
+		"defaultMessage": "Each repeat offense doubles the ban up to the longest ban. 0 never bans permanently."
+	},
+	"sentinel.autoban.exempt": {
+		"defaultMessage": "Never ban these networks"
+	},
+	"sentinel.autoban.exempt.hint": {
+		"defaultMessage": "One address or CIDR per line. Add your home network so a misconfigured device at home cannot lock you out."
+	},
+	"sentinel.autoban.hint": {
+		"defaultMessage": "A banned client gets no response from any host. Each repeat offense doubles the ban. Hosts excluded in their protection settings never cause a ban."
+	},
+	"sentinel.autoban.max-duration": {
+		"defaultMessage": "Longest ban (s)"
+	},
+	"sentinel.autoban.off": {
+		"defaultMessage": "Automatic bans off"
+	},
+	"sentinel.autoban.on": {
+		"defaultMessage": "Automatic bans on"
+	},
+	"sentinel.autoban.permanent-after": {
+		"defaultMessage": "Permanent from offense"
+	},
+	"sentinel.autoban.threshold": {
+		"defaultMessage": "Ban after"
+	},
+	"sentinel.autoban.window": {
+		"defaultMessage": "Within (s)"
+	},
+	"sentinel.badge.no-autoban": {
+		"defaultMessage": "No automatic bans"
+	},
+	"sentinel.badge.pages": {
+		"defaultMessage": "Page loads only"
+	},
+	"sentinel.ban.add": {
+		"defaultMessage": "Ban IP"
+	},
+	"sentinel.ban.created": {
+		"defaultMessage": "{ip} is banned"
+	},
+	"sentinel.ban.duration": {
+		"defaultMessage": "Ban for"
+	},
+	"sentinel.ban.ended": {
+		"defaultMessage": "Ended"
+	},
+	"sentinel.ban.ip": {
+		"defaultMessage": "IP address"
+	},
+	"sentinel.ban.ip.hint": {
+		"defaultMessage": "An IPv6 address bans its whole /64 network, which is what one home or server usually gets."
+	},
+	"sentinel.ban.lift": {
+		"defaultMessage": "Lift ban"
+	},
+	"sentinel.ban.lifted": {
+		"defaultMessage": "The ban of {ip} was lifted"
+	},
+	"sentinel.ban.offenses": {
+		"defaultMessage": "Offenses"
+	},
+	"sentinel.ban.permanent": {
+		"defaultMessage": "Permanent"
+	},
+	"sentinel.ban.reason": {
+		"defaultMessage": "Reason"
+	},
+	"sentinel.ban.source.auto": {
+		"defaultMessage": "Automatic"
+	},
+	"sentinel.ban.source.manual": {
+		"defaultMessage": "By hand"
+	},
+	"sentinel.ban.submit": {
+		"defaultMessage": "Ban"
+	},
+	"sentinel.ban.until": {
+		"defaultMessage": "Until"
+	},
+	"sentinel.bans": {
+		"defaultMessage": "Bans"
+	},
+	"sentinel.bans.empty": {
+		"defaultMessage": "No client is banned"
+	},
+	"sentinel.bans.hint": {
+		"defaultMessage": "Banned clients get no response from any host."
+	},
+	"sentinel.bans.show-ended": {
+		"defaultMessage": "Show {n, plural, one {# ended ban} other {# ended bans}}"
+	},
 	"sentinel.challenge.bind-ua": {
 		"defaultMessage": "Also tie the pass to the browser"
 	},
@@ -853,6 +976,12 @@
 	},
 	"sentinel.challenge.mode.js.hint": {
 		"defaultMessage": "The browser solves a small puzzle, usually in about a second. Stops bots that do not run JavaScript."
+	},
+	"sentinel.challenge.pages": {
+		"defaultMessage": "Only challenge page loads"
+	},
+	"sentinel.challenge.pages.hint": {
+		"defaultMessage": "API calls, websockets, media streams and app requests pass without a challenge. Turn this on for apps with their own clients, such as Plex, Seerr or Jellyfin."
 	},
 	"sentinel.challenge.ttl": {
 		"defaultMessage": "Pass valid for"
@@ -910,6 +1039,21 @@
 	},
 	"sentinel.field.ip.src": {
 		"defaultMessage": "Client IP"
+	},
+	"sentinel.host-protection": {
+		"defaultMessage": "Protection"
+	},
+	"sentinel.host.no-autoban": {
+		"defaultMessage": "Never ban clients because of this host"
+	},
+	"sentinel.host.no-autoban.hint": {
+		"defaultMessage": "Error responses and detections on this host are not counted towards automatic bans. Recommended for Plex, whose apps often get 401 and 404 responses."
+	},
+	"sentinel.host.rate-limit": {
+		"defaultMessage": "Rate limit: {name} (change it in the Rate limits tab)"
+	},
+	"sentinel.host.rate-limit.none": {
+		"defaultMessage": "No rate limit (add one in the Rate limits tab)"
 	},
 	"sentinel.list": {
 		"defaultMessage": "Sentinel List"
@@ -1037,11 +1181,23 @@
 	"sentinel.placeholder.ip.src": {
 		"defaultMessage": "One address or network per line, e.g. 203.0.113.0/24"
 	},
+	"sentinel.preset": {
+		"defaultMessage": "Preset:"
+	},
 	"sentinel.preset.bad-bots": {
 		"defaultMessage": "Bad bots (User-Agent)"
 	},
 	"sentinel.preset.bad-bots.description": {
 		"defaultMessage": "User-Agents of scanners and bad bots, from the Nginx Ultimate Bad Bot Blocker project"
+	},
+	"sentinel.preset.hint": {
+		"defaultMessage": "Fills in settings that keep the app and its TV, mobile and desktop clients working. Review them and save."
+	},
+	"sentinel.preset.plex": {
+		"defaultMessage": "Plex"
+	},
+	"sentinel.preset.seerr": {
+		"defaultMessage": "Seerr"
 	},
 	"sentinel.preset.tor": {
 		"defaultMessage": "Tor exit nodes"
@@ -1051,6 +1207,60 @@
 	},
 	"sentinel.presets": {
 		"defaultMessage": "Presets"
+	},
+	"sentinel.rate-limit": {
+		"defaultMessage": "Rate Limit"
+	},
+	"sentinel.rate-limit.burst": {
+		"defaultMessage": "Burst"
+	},
+	"sentinel.rate-limit.connections": {
+		"defaultMessage": "Connections per client"
+	},
+	"sentinel.rate-limit.connections-summary": {
+		"defaultMessage": "at most {n} connections"
+	},
+	"sentinel.rate-limit.dry-run": {
+		"defaultMessage": "Dry run"
+	},
+	"sentinel.rate-limit.dry-run.hint": {
+		"defaultMessage": "Only counts what would be refused, so you can check the limit against real traffic first."
+	},
+	"sentinel.rate-limit.exempt": {
+		"defaultMessage": "Never limit these networks"
+	},
+	"sentinel.rate-limit.hosts": {
+		"defaultMessage": "Hosts"
+	},
+	"sentinel.rate-limit.rate": {
+		"defaultMessage": "Limit"
+	},
+	"sentinel.rate-limit.rate.hint": {
+		"defaultMessage": "Per client and host. Burst lets short spikes through, like a page loading its images. 0 connections means no connection limit."
+	},
+	"sentinel.rate-limit.refused": {
+		"defaultMessage": "Refused (10 min)"
+	},
+	"sentinel.rate-limit.rps": {
+		"defaultMessage": "Requests per second"
+	},
+	"sentinel.rate-limit.summary": {
+		"defaultMessage": "{rps}/s, burst {burst}"
+	},
+	"sentinel.rate-limit.taken": {
+		"defaultMessage": "(in {name})"
+	},
+	"sentinel.rate-limit.would-limit": {
+		"defaultMessage": "{n} would be refused"
+	},
+	"sentinel.rate-limits": {
+		"defaultMessage": "Rate limits"
+	},
+	"sentinel.rate-limits.empty": {
+		"defaultMessage": "No rate limits yet"
+	},
+	"sentinel.rate-limits.hint": {
+		"defaultMessage": "Limit how fast one client can send requests to a host. Start with a dry run."
 	},
 	"sentinel.rule": {
 		"defaultMessage": "Security Rule"
@@ -1150,6 +1360,12 @@
 	},
 	"sentinel.status.444": {
 		"defaultMessage": "444 Close connection"
+	},
+	"sentinel.tile.bans": {
+		"defaultMessage": "Banned clients"
+	},
+	"sentinel.tile.bans.sub": {
+		"defaultMessage": "Blocked on every host"
 	},
 	"sentinel.tile.deploy": {
 		"defaultMessage": "Configuration"

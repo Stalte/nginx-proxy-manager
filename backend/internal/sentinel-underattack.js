@@ -3,14 +3,15 @@ import errs from "../lib/error.js";
 import * as alerts from "../lib/sentinel/alerts.js";
 import { PATHS } from "../lib/sentinel/compile.js";
 import { ensureSecrets } from "../lib/sentinel/secrets.js";
+import { statusRequest } from "../lib/sentinel/status.js";
 import * as ua from "../lib/sentinel/underattack.js";
 import * as validate from "../lib/sentinel/validate.js";
 import { sentinel as logger } from "../logger.js";
 import proxyHostModel from "../models/proxy_host.js";
 import hostModel from "../models/sentinel_host.js";
+import rateLimitModel from "../models/sentinel_rate_limit.js";
 import internalAuditLog from "./audit-log.js";
 
-const STATUS_URL = "http://127.0.0.1:9180";
 const TICK_MS = 10 * 1000;
 const MAX_PUSH_AGE_MS = 60 * 1000;
 const MAX_EVENTS = 50;
@@ -49,28 +50,6 @@ const saveState = () => {
 	const tmp = `${PATHS.underAttack}.tmp`;
 	fs.writeFileSync(tmp, JSON.stringify({ ...state, events }));
 	fs.renameSync(tmp, PATHS.underAttack);
-};
-
-/**
- * Request to the gateway's loopback status port (conf.d/sentinel.conf).
- */
-const statusRequest = async (path, init = {}) => {
-	const { status_key: key } = ensureSecrets(PATHS.secrets);
-	const ctl = new AbortController();
-	const t = setTimeout(() => ctl.abort(), 3000);
-	try {
-		const res = await fetch(`${STATUS_URL}${path}`, {
-			...init,
-			headers: { ...(init.headers || {}), "X-Corvus-Status-Key": key },
-			signal: ctl.signal,
-		});
-		if (!res.ok) {
-			throw new Error(`status port answered HTTP ${res.status}`);
-		}
-		return res;
-	} finally {
-		clearTimeout(t);
-	}
 };
 
 const readAlerts = () => {
@@ -217,10 +196,17 @@ const internalUnderAttack = {
 	 */
 	list: async (access) => {
 		await access.can("sentinel:list");
-		const [hosts, rows] = await Promise.all([
+		const [hosts, rows, limits] = await Promise.all([
 			proxyHostModel.query().where("is_deleted", 0).select("id", "domain_names", "enabled").orderBy("id"),
 			hostModel.query(),
+			rateLimitModel.query().where("is_deleted", 0).andWhere("enabled", 1).select("id", "name", "host_ids"),
 		]);
+		const limitOf = new Map();
+		for (const l of limits) {
+			for (const h of l.host_ids || []) {
+				if (!limitOf.has(Number(h))) limitOf.set(Number(h), { id: l.id, name: l.name });
+			}
+		}
 		const byHost = new Map(rows.map((r) => [Number(r.proxy_host_id), r]));
 		const st = loadState();
 		const now = Date.now();
@@ -246,6 +232,8 @@ const internalUnderAttack = {
 				since: auto ? new Date(a.since).toISOString() : null,
 				until: auto ? new Date(a.until).toISOString() : null,
 				reason: auto ? a.reason : "",
+				no_autoban: !!row?.no_autoban,
+				rate_limit: limitOf.get(Number(h.id)) || null,
 			};
 		});
 	},
@@ -263,7 +251,7 @@ const internalUnderAttack = {
 		}
 		let clean;
 		try {
-			clean = validate.underAttack(data);
+			clean = { ...validate.underAttack(data), no_autoban: data.no_autoban === true };
 		} catch (err) {
 			throw toValidationError(err);
 		}
@@ -278,9 +266,11 @@ const internalUnderAttack = {
 			},
 			async () => {
 				if (before) {
-					await hostModel
-						.query()
-						.patchAndFetchById(before.id, { under_attack: before.under_attack, config: before.config });
+					await hostModel.query().patchAndFetchById(before.id, {
+						under_attack: before.under_attack,
+						config: before.config,
+						no_autoban: before.no_autoban,
+					});
 				} else {
 					await hostModel.query().where("proxy_host_id", hostId).delete();
 				}

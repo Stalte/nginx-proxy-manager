@@ -501,7 +501,7 @@ const intIn = (v, def, min, max) => {
 };
 
 /**
- * Normalises browser challenge settings {mode, difficulty, ttl, bind}; problems are
+ * Normalises browser challenge settings {mode, difficulty, ttl, bind, pages}; problems are
  * added to errs under prefix.
  */
 export const challengeSettings = (c, errs, prefix, defTTL = CHALLENGE.defTTL) => {
@@ -511,6 +511,8 @@ export const challengeSettings = (c, errs, prefix, defTTL = CHALLENGE.defTTL) =>
 		difficulty: intIn(src.difficulty, CHALLENGE.defBits, CHALLENGE.minBits, CHALLENGE.maxBits),
 		ttl: intIn(src.ttl, defTTL, CHALLENGE.minTTL, CHALLENGE.maxTTL),
 		bind: src.bind || "ip",
+		// challenge only browser page loads (apps and API clients pass), see rules.lua page_load
+		pages: src.pages === true,
 	};
 	if (!CHALLENGE.modes.includes(out.mode)) {
 		errs.add(`${prefix}.mode`, "challenge type must be js or cookie");

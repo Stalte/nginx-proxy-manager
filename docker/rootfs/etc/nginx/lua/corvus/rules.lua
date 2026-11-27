@@ -267,6 +267,8 @@ function _M.init(path)
       id = r.id, action = r.action, status = r.status or 403, skip_auth = r.skip_auth and true or false,
       tag = r.id .. ":" .. r.action, groups = groups,
       ch = r.action == "challenge" and challenge.settings(r.challenge) or nil,
+      -- NPM: challenge only page loads, so apps and API clients are not challenged
+      pages = r.action == "challenge" and type(r.challenge) == "table" and r.challenge.pages == true,
     }
   end
   HOSTS = {}
@@ -278,6 +280,8 @@ function _M.init(path)
     HOSTS[tonumber(hid) or hid] = { rules = list, cf = h.cf and true or false, exploits = h.exploits and true or false,
       body = h.body or "off", body_max = tonumber(h.body_max) or 1048576,
       ua = ua, ua_rule = ua and { id = underattack.RULE, ch = ua.ch } or nil,
+      ua_pages = type(h.under_attack) == "table" and h.under_attack.pages == true,
+      no_ab = h.no_autoban == true,
       login = login.settings(h.login) }
     local hc = HOSTS[tonumber(hid) or hid]
     hc.idle = #list == 0 and not hc.exploits and hc.body == "off" and not ua and not hc.login
@@ -571,6 +575,21 @@ local function login_check(host_id, lg, uri)
   return ngx.exit(ngx.HTTP_OK)
 end
 
+-- NPM: whether the request is a browser page load (a top-level navigation), the only
+-- kind of request that can show a challenge page. App and API clients (Plex apps, mobile
+-- apps, XHR/fetch, media segments, websockets) send other requests and are not challenged
+-- on hosts or rules set to "page loads only". A client can avoid looking like a page load
+-- on purpose, so this trades protection for compatibility.
+function _M.page_load()
+  local m = ngx.req.get_method()
+  if m ~= "GET" and m ~= "HEAD" then return false end
+  if ngx.var.http_upgrade then return false end
+  local mode = ngx.var.http_sec_fetch_mode
+  if mode then return mode == "navigate" end
+  local accept = ngx.var.http_accept
+  return type(accept) == "string" and find(accept, "text/html", 1, true) ~= nil
+end
+
 function _M.rewrite(host_id)
   -- X-Corvus-User comes only from the login page (see login_check), never from a client.
   if ngx.var.http_x_corvus_user ~= nil then ngx.req.clear_header("X-Corvus-User") end
@@ -599,7 +618,8 @@ function _M.rewrite(host_id)
         if ngx.var.corvus_rule == "" then ngx.var.corvus_rule = rule.tag end
       elseif a == "challenge" then
         -- the verify endpoint itself is never challenged (block rules still apply)
-        if uri ~= challenge.VERIFY_PATH and not challenge.passed(ctx, rule.ch) then
+        if uri ~= challenge.VERIFY_PATH and (not rule.pages or _M.page_load())
+            and not challenge.passed(ctx, rule.ch) then
           ngx.var.corvus_rule = rule.tag
           return send_challenge(rule, challenge.return_path())
         end
@@ -650,7 +670,8 @@ function _M.rewrite(host_id)
     if underattack.active(host.ua, until_, now) then
       local ex, bin = ua_exempt(), ngx.var.binary_remote_addr
       local ip_ex = (ex ~= nil and bin ~= nil and ip_in(ex, bin)) or false
-      if underattack.decide(host.ua, until_, now, uri, ip_ex, challenge.pass(ctx)) == "challenge" then
+      if (not host.ua_pages or _M.page_load())
+          and underattack.decide(host.ua, until_, now, uri, ip_ex, challenge.pass(ctx)) == "challenge" then
         ngx.var.corvus_rule = underattack.TAG .. ":challenge"
         return send_challenge(host.ua_rule, challenge.return_path())
       end
@@ -1052,6 +1073,13 @@ local function bb_config()
         duration = math.max(tonumber(c.duration) or 900, 1),
         exempt = ip_matcher(type(c.exempt) == "table" and c.exempt or {}),
       }
+      -- NPM: requests Sentinel refused (security detections) per client, see _M.npm_log
+      if type(c.det) == "table" then
+        cfg.det = {
+          threshold = math.max(tonumber(c.det.threshold) or 20, 1),
+          window = math.max(tonumber(c.det.window) or 600, 1),
+        }
+      end
     end
     BB_V, BB_CFG = v, cfg
   end
@@ -1140,5 +1168,67 @@ end
 -- Exposed for tests.
 _M._compile_cond = compile_cond
 _M._test = test
+
+
+-- ------------------------------------------------------------------ NPM automatic bans
+
+-- Gateway-local ban with a pending record for the backend (same flow as the
+-- bad-behaviour bans of _M.log: polled from the status port, recorded with escalation,
+-- acknowledged with the next ban-list push).
+local function local_ban(cfg, ip, kind, counts, window, n)
+  local bans, q = ngx.shared.corvus_bans, ngx.shared.corvus_bb_q
+  local id = tostring(ngx.now()) .. "-" .. tostring(math.random(1, 1000000000))
+  local rec = cjson.encode({ id = id, ip = ip, host = ngx.var.host, counts = counts,
+    window = window, t = ngx.time(), kind = kind })
+  q:set("p:" .. ip, rec, cfg.duration)
+  bans:set(ip, "bb", cfg.duration)
+  ngx.log(ngx.WARN, "corvus: ", kind, " ban ", ip, " on ", ngx.var.host,
+    " (", n, " in ", window, "s)")
+end
+
+-- NPM: log_by_lua of every proxy host (corvus/hostlog.lua). Like _M.log without the
+-- Corvus access log (nginx writes the host's own), plus a second detector: clients whose
+-- requests Sentinel keeps refusing (block rules, exploit and body blocking) are banned
+-- once det.threshold is reached within det.window.
+function _M.npm_log(host_id)
+  local cfg = bb_config()
+  if not cfg then return end
+  local host = HOSTS[host_id]
+  if host and host.no_ab then return end   -- host excluded from automatic bans
+  -- already banned, allowed by a security rule or answered with a challenge: not counted
+  if ngx.var.corvus_ban == "1" or ngx.var.corvus_skip == "1" or ngx.ctx.corvus_ch then return end
+  local uri = ngx.var.uri or ""
+  if sub(uri, 1, 28) == "/.well-known/acme-challenge/" or sub(uri, 1, 10) == "/__corvus/" then return end
+  local bin = ngx.var.binary_remote_addr
+  if not bin or ip_in(cfg.exempt, bin) then return end
+  local ip = ipkey.client(ngx.var.remote_addr)
+  local bans, d, q = ngx.shared.corvus_bans, ngx.shared.corvus_bb, ngx.shared.corvus_bb_q
+  if not bans or not d or not q or bans:get(ip) then return end
+
+  local det = cfg.det
+  if det and ngx.ctx.corvus_blocked then
+    local k = "det|" .. ip
+    local n = d:incr(k, 1, 0, det.window)
+    if n and n >= det.threshold then
+      d:delete(k)
+      return local_ban(cfg, ip, "detections", { blocked = n }, det.window, n)
+    end
+  end
+
+  local status = tonumber(ngx.var.status)
+  if not status or not cfg.codes[status] then return end
+  local base = ip .. "|" .. tostring(host_id)
+  local n = d:incr(base, 1, 0, cfg.window)
+  d:incr(base .. "|" .. status, 1, 0, cfg.window)
+  if not n or n < cfg.threshold then return end
+  local counts = {}
+  for _, code in ipairs(cfg.list) do
+    local k = base .. "|" .. code
+    local c = d:get(k)
+    if c then counts[tostring(code)] = c; d:delete(k) end
+  end
+  d:delete(base)
+  return local_ban(cfg, ip, "bad_behaviour", counts, cfg.window, n)
+end
 
 return _M

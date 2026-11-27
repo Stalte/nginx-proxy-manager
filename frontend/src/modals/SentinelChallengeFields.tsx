@@ -1,7 +1,13 @@
 import type { SentinelChallenge } from "src/api/backend";
 import { intl, T } from "src/locale";
 
-export const DEFAULT_CHALLENGE: SentinelChallenge = { mode: "js", difficulty: 16, ttl: 86400, bind: "ip" };
+export const DEFAULT_CHALLENGE: SentinelChallenge = {
+	mode: "js",
+	difficulty: 16,
+	ttl: 86400,
+	bind: "ip",
+	pages: false,
+};
 
 // Pass lifetimes offered (seconds)
 const TTLS = [300, 900, 3600, 6 * 3600, 86400, 7 * 86400];
@@ -88,6 +94,22 @@ export function SentinelChallengeFields({ idPrefix, value, onChange }: Props) {
 						<T id="sentinel.challenge.bind-ua" />
 					</span>
 				</label>
+			</div>
+			<div className="col-12 mb-3">
+				<label className="form-check mb-0">
+					<input
+						type="checkbox"
+						className="form-check-input"
+						checked={value.pages === true}
+						onChange={(e) => set({ pages: e.target.checked })}
+					/>
+					<span className="form-check-label">
+						<T id="sentinel.challenge.pages" />
+					</span>
+				</label>
+				<div className="form-hint small">
+					<T id="sentinel.challenge.pages.hint" />
+				</div>
 			</div>
 		</div>
 	);

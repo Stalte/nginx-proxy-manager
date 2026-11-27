@@ -812,6 +812,129 @@
 	"sentinel.alerts.url.webhook": {
 		"defaultMessage": "https://example.com/hooks/npm"
 	},
+	"sentinel.autoban": {
+		"defaultMessage": "Automaatsed keelud"
+	},
+	"sentinel.autoban.bad-behaviour": {
+		"defaultMessage": "Veavastused"
+	},
+	"sentinel.autoban.bad-behaviour.enabled": {
+		"defaultMessage": "Keela kliendid, kes saavad pidevalt veavastuseid"
+	},
+	"sentinel.autoban.bad-behaviour.hint": {
+		"defaultMessage": "Püüab kinni skannerid, mis otsivad faile ja sisselogimisi. Loetakse kliendi ja hosti kaupa."
+	},
+	"sentinel.autoban.codes": {
+		"defaultMessage": "Olekukoodid"
+	},
+	"sentinel.autoban.detections": {
+		"defaultMessage": "Turvatuvastused"
+	},
+	"sentinel.autoban.detections.enabled": {
+		"defaultMessage": "Keela kliendid, keda Sentinel pidevalt tagasi lükkab"
+	},
+	"sentinel.autoban.duration": {
+		"defaultMessage": "Esimene keeld (s)"
+	},
+	"sentinel.autoban.enabled": {
+		"defaultMessage": "Keela halvasti käituvad kliendid automaatselt"
+	},
+	"sentinel.autoban.escalation": {
+		"defaultMessage": "Keelu kestus"
+	},
+	"sentinel.autoban.escalation.hint": {
+		"defaultMessage": "Iga korduv rikkumine kahekordistab keelu kuni pikima keeluni. 0 ei keela kunagi alaliselt."
+	},
+	"sentinel.autoban.exempt": {
+		"defaultMessage": "Ära kunagi keela neid võrke"
+	},
+	"sentinel.autoban.exempt.hint": {
+		"defaultMessage": "Üks aadress või CIDR rea kohta. Lisa oma koduvõrk, et valesti seadistatud koduseade sind välja ei lukustaks."
+	},
+	"sentinel.autoban.hint": {
+		"defaultMessage": "Keelatud klient ei saa ühestki hostist vastust. Iga korduv rikkumine kahekordistab keelu. Hostid, mis on oma kaitseseadetes välja jäetud, ei põhjusta kunagi keeldu."
+	},
+	"sentinel.autoban.max-duration": {
+		"defaultMessage": "Pikim keeld (s)"
+	},
+	"sentinel.autoban.off": {
+		"defaultMessage": "Automaatsed keelud väljas"
+	},
+	"sentinel.autoban.on": {
+		"defaultMessage": "Automaatsed keelud sees"
+	},
+	"sentinel.autoban.permanent-after": {
+		"defaultMessage": "Alaline alates rikkumisest"
+	},
+	"sentinel.autoban.threshold": {
+		"defaultMessage": "Keela pärast"
+	},
+	"sentinel.autoban.window": {
+		"defaultMessage": "Ajavahemikus (s)"
+	},
+	"sentinel.badge.no-autoban": {
+		"defaultMessage": "Automaatsed keelud puuduvad"
+	},
+	"sentinel.badge.pages": {
+		"defaultMessage": "Ainult lehe laadimised"
+	},
+	"sentinel.ban.add": {
+		"defaultMessage": "Keela IP"
+	},
+	"sentinel.ban.created": {
+		"defaultMessage": "{ip} on keelatud"
+	},
+	"sentinel.ban.duration": {
+		"defaultMessage": "Keela"
+	},
+	"sentinel.ban.ended": {
+		"defaultMessage": "Lõppenud"
+	},
+	"sentinel.ban.ip": {
+		"defaultMessage": "IP-aadress"
+	},
+	"sentinel.ban.ip.hint": {
+		"defaultMessage": "IPv6-aadress keelab kogu oma /64 võrgu, mille tavaliselt saab üks kodu või server."
+	},
+	"sentinel.ban.lift": {
+		"defaultMessage": "Tühista keeld"
+	},
+	"sentinel.ban.lifted": {
+		"defaultMessage": "Aadressi {ip} keeld tühistati"
+	},
+	"sentinel.ban.offenses": {
+		"defaultMessage": "Rikkumised"
+	},
+	"sentinel.ban.permanent": {
+		"defaultMessage": "Alaline"
+	},
+	"sentinel.ban.reason": {
+		"defaultMessage": "Põhjus"
+	},
+	"sentinel.ban.source.auto": {
+		"defaultMessage": "Automaatne"
+	},
+	"sentinel.ban.source.manual": {
+		"defaultMessage": "Käsitsi"
+	},
+	"sentinel.ban.submit": {
+		"defaultMessage": "Keela"
+	},
+	"sentinel.ban.until": {
+		"defaultMessage": "Kuni"
+	},
+	"sentinel.bans": {
+		"defaultMessage": "Keelud"
+	},
+	"sentinel.bans.empty": {
+		"defaultMessage": "Ükski klient pole keelatud"
+	},
+	"sentinel.bans.hint": {
+		"defaultMessage": "Keelatud kliendid ei saa ühestki hostist vastust."
+	},
+	"sentinel.bans.show-ended": {
+		"defaultMessage": "Näita {n, plural, one {# lõppenud keeldu} other {# lõppenud keeldu}}"
+	},
 	"sentinel.challenge.bind-ua": {
 		"defaultMessage": "Seo pääs ka brauseriga"
 	},
@@ -853,6 +976,12 @@
 	},
 	"sentinel.challenge.mode.js.hint": {
 		"defaultMessage": "Brauser lahendab väikese ülesande, tavaliselt umbes sekundiga. Peatab robotid, mis JavaScripti ei käivita."
+	},
+	"sentinel.challenge.pages": {
+		"defaultMessage": "Kontrolli ainult lehe laadimisi"
+	},
+	"sentinel.challenge.pages.hint": {
+		"defaultMessage": "API-päringud, veebisoklid, meediavood ja rakenduste päringud pääsevad kontrollita. Lülita see sisse rakenduste jaoks, millel on oma kliendid, nagu Plex, Seerr või Jellyfin."
 	},
 	"sentinel.challenge.ttl": {
 		"defaultMessage": "Pääs kehtib"
@@ -910,6 +1039,21 @@
 	},
 	"sentinel.field.ip.src": {
 		"defaultMessage": "Kliendi IP"
+	},
+	"sentinel.host-protection": {
+		"defaultMessage": "Kaitse"
+	},
+	"sentinel.host.no-autoban": {
+		"defaultMessage": "Ära kunagi keela kliente selle hosti tõttu"
+	},
+	"sentinel.host.no-autoban.hint": {
+		"defaultMessage": "Selle hosti veavastuseid ja tuvastusi ei arvestata automaatsete keeldude hulka. Soovitatav Plexi jaoks, mille rakendused saavad sageli 401 ja 404 vastuseid."
+	},
+	"sentinel.host.rate-limit": {
+		"defaultMessage": "Kiiruspiirang: {name} (muuda seda vahekaardil Kiiruspiirangud)"
+	},
+	"sentinel.host.rate-limit.none": {
+		"defaultMessage": "Kiiruspiirang puudub (lisa see vahekaardil Kiiruspiirangud)"
 	},
 	"sentinel.list": {
 		"defaultMessage": "Sentineli loend"
@@ -1037,11 +1181,23 @@
 	"sentinel.placeholder.ip.src": {
 		"defaultMessage": "Üks aadress või võrk rea kohta, nt 203.0.113.0/24"
 	},
+	"sentinel.preset": {
+		"defaultMessage": "Eelseade:"
+	},
 	"sentinel.preset.bad-bots": {
 		"defaultMessage": "Pahatahtlikud robotid (User-Agent)"
 	},
 	"sentinel.preset.bad-bots.description": {
 		"defaultMessage": "Skännerite ja pahatahtlike robotite User-Agentid projektist Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.hint": {
+		"defaultMessage": "Täidab seaded, mis hoiavad rakenduse ning selle teleri-, mobiili- ja lauaarvutikliendid töös. Vaata need üle ja salvesta."
+	},
+	"sentinel.preset.plex": {
+		"defaultMessage": "Plex"
+	},
+	"sentinel.preset.seerr": {
+		"defaultMessage": "Seerr"
 	},
 	"sentinel.preset.tor": {
 		"defaultMessage": "Tori väljundsõlmed"
@@ -1051,6 +1207,60 @@
 	},
 	"sentinel.presets": {
 		"defaultMessage": "Eelseadistused"
+	},
+	"sentinel.rate-limit": {
+		"defaultMessage": "Kiiruspiirang"
+	},
+	"sentinel.rate-limit.burst": {
+		"defaultMessage": "Puhver"
+	},
+	"sentinel.rate-limit.connections": {
+		"defaultMessage": "Ühendusi kliendi kohta"
+	},
+	"sentinel.rate-limit.connections-summary": {
+		"defaultMessage": "kuni {n} ühendust"
+	},
+	"sentinel.rate-limit.dry-run": {
+		"defaultMessage": "Proovirežiim"
+	},
+	"sentinel.rate-limit.dry-run.hint": {
+		"defaultMessage": "Ainult loeb, mis tagasi lükataks, et saaksid piirangut esmalt päris liikluse peal kontrollida."
+	},
+	"sentinel.rate-limit.exempt": {
+		"defaultMessage": "Ära kunagi piira neid võrke"
+	},
+	"sentinel.rate-limit.hosts": {
+		"defaultMessage": "Hostid"
+	},
+	"sentinel.rate-limit.rate": {
+		"defaultMessage": "Piirang"
+	},
+	"sentinel.rate-limit.rate.hint": {
+		"defaultMessage": "Kliendi ja hosti kohta. Puhver laseb läbi lühikesed tipud, näiteks lehe piltide laadimise. 0 ühendust tähendab ühenduste piiranguta."
+	},
+	"sentinel.rate-limit.refused": {
+		"defaultMessage": "Tagasi lükatud (10 min)"
+	},
+	"sentinel.rate-limit.rps": {
+		"defaultMessage": "Päringuid sekundis"
+	},
+	"sentinel.rate-limit.summary": {
+		"defaultMessage": "{rps}/s, puhver {burst}"
+	},
+	"sentinel.rate-limit.taken": {
+		"defaultMessage": "({name} all)"
+	},
+	"sentinel.rate-limit.would-limit": {
+		"defaultMessage": "{n} lükataks tagasi"
+	},
+	"sentinel.rate-limits": {
+		"defaultMessage": "Kiiruspiirangud"
+	},
+	"sentinel.rate-limits.empty": {
+		"defaultMessage": "Kiiruspiiranguid veel pole"
+	},
+	"sentinel.rate-limits.hint": {
+		"defaultMessage": "Piira, kui kiiresti üks klient saab hostile päringuid saata. Alusta proovirežiimiga."
 	},
 	"sentinel.rule": {
 		"defaultMessage": "Turvareegel"
@@ -1150,6 +1360,12 @@
 	},
 	"sentinel.status.444": {
 		"defaultMessage": "444 Sulge ühendus"
+	},
+	"sentinel.tile.bans": {
+		"defaultMessage": "Keelatud kliendid"
+	},
+	"sentinel.tile.bans.sub": {
+		"defaultMessage": "Blokeeritud igas hostis"
 	},
 	"sentinel.tile.deploy": {
 		"defaultMessage": "Konfiguratsioon"

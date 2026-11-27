@@ -95,7 +95,7 @@ export default function UnderAttack() {
 									<T id="column.source" />
 								</th>
 								<th>
-									<T id="sentinel.under-attack.mode" />
+									<T id="sentinel.host-protection" />
 								</th>
 								<th>
 									<T id="column.status" />
@@ -124,6 +124,21 @@ export default function UnderAttack() {
 												/>
 											</div>
 										) : null}
+										<div className="d-flex flex-wrap gap-1 mt-1">
+											{h.config.pages ? (
+												<span className="badge bg-blue-lt">
+													<T id="sentinel.badge.pages" />
+												</span>
+											) : null}
+											{h.noAutoban ? (
+												<span className="badge bg-secondary-lt">
+													<T id="sentinel.badge.no-autoban" />
+												</span>
+											) : null}
+											{h.rateLimit ? (
+												<span className="badge bg-yellow-lt">{h.rateLimit.name}</span>
+											) : null}
+										</div>
 									</td>
 									<td style={{ maxWidth: 360 }}>
 										<State h={h} />

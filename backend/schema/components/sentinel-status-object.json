@@ -11,6 +11,9 @@
 		},
 		"under_attack": {
 			"type": "object"
+		},
+		"bans": {
+			"type": "object"
 		}
 	}
 }

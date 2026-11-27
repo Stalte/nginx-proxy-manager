@@ -40,6 +40,8 @@ export interface SentinelChallenge {
 	difficulty: number;
 	ttl: number;
 	bind: "ip" | "ip_ua";
+	// only challenge page loads, not API, websocket or app requests
+	pages?: boolean;
 }
 
 export interface SentinelRule {
@@ -87,6 +89,7 @@ export interface SentinelStatus {
 		error: string;
 	};
 	underAttack?: { active: number; sync: { ok: boolean; error: string; at: string | null } };
+	bans?: { active: number; sync: { ok: boolean; error: string; at: string | null } };
 }
 
 export type SentinelUnderAttackMode = "off" | "on" | "auto";
@@ -108,6 +111,52 @@ export interface SentinelUnderAttackHost {
 	since: string | null;
 	until: string | null;
 	reason: string;
+	noAutoban: boolean;
+	rateLimit: { id: number; name: string } | null;
+}
+
+export interface SentinelBan {
+	id: number;
+	ip: string;
+	reason: string;
+	source: "auto" | "manual";
+	offenses: number;
+	createdOn: string;
+	modifiedOn: string;
+	// unix seconds, null: permanent
+	expiresAt: number | null;
+	active: boolean;
+}
+
+export interface SentinelAutoban {
+	enabled: boolean;
+	detections: boolean;
+	threshold: number;
+	windowS: number;
+	badBehaviour: boolean;
+	badBehaviourCodes: number[];
+	badBehaviourThreshold: number;
+	badBehaviourWindowS: number;
+	durationS: number;
+	maxDurationS: number;
+	permanentAfter: number;
+	exempt: string[];
+}
+
+export interface SentinelRateLimit {
+	id: number;
+	createdOn?: string;
+	modifiedOn?: string;
+	name: string;
+	enabled: boolean;
+	requestsPerSecond: number;
+	burst: number;
+	maxConnections: number;
+	statusCode: number;
+	dryRun: boolean;
+	exempt: string[];
+	hostIds: number[];
+	stats?: { limited: number; wouldLimit: number };
 }
 
 export interface SentinelUnderAttackEvent {
@@ -209,8 +258,9 @@ export async function saveSentinelUnderAttack(
 	hostId: number,
 	underAttack: SentinelUnderAttackMode,
 	config: SentinelUnderAttackConfig,
+	noAutoban: boolean,
 ): Promise<SentinelUnderAttackHost> {
-	return await api.put({ url: `/sentinel/under-attack/${hostId}`, data: { underAttack, config } });
+	return await api.put({ url: `/sentinel/under-attack/${hostId}`, data: { underAttack, config, noAutoban } });
 }
 
 export async function deactivateSentinelUnderAttack(hostId: number): Promise<boolean> {
@@ -230,4 +280,40 @@ export async function saveSentinelAlerts(a: SentinelAlerts): Promise<SentinelAle
 
 export async function testSentinelAlerts(): Promise<boolean> {
 	return await api.post({ url: "/sentinel/alerts/test" });
+}
+
+export async function getSentinelBans(): Promise<SentinelBan[]> {
+	return await api.get({ url: "/sentinel/bans" });
+}
+
+export async function createSentinelBan(ip: string, reason: string, durationS: number): Promise<SentinelBan> {
+	return await api.post({ url: "/sentinel/bans", data: { ip, reason, durationS } });
+}
+
+export async function liftSentinelBan(id: number): Promise<boolean> {
+	return await api.del({ url: `/sentinel/bans/${id}` });
+}
+
+export async function getSentinelAutoban(): Promise<SentinelAutoban> {
+	return await api.get({ url: "/sentinel/autoban" });
+}
+
+export async function saveSentinelAutoban(s: SentinelAutoban): Promise<SentinelAutoban> {
+	return await api.put({ url: "/sentinel/autoban", data: s });
+}
+
+export async function getSentinelRateLimits(): Promise<SentinelRateLimit[]> {
+	return await api.get({ url: "/sentinel/rate-limits" });
+}
+
+export async function saveSentinelRateLimit(r: Partial<SentinelRateLimit>): Promise<SentinelRateLimit> {
+	const { id, createdOn: _c, modifiedOn: _m, stats: _s, ...data } = r;
+	if (id) {
+		return await api.put({ url: `/sentinel/rate-limits/${id}`, data });
+	}
+	return await api.post({ url: "/sentinel/rate-limits", data });
+}
+
+export async function deleteSentinelRateLimit(id: number): Promise<boolean> {
+	return await api.del({ url: `/sentinel/rate-limits/${id}` });
 }

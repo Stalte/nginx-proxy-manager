@@ -20,6 +20,8 @@ const allowedIdentical = new Set([
 	"sentinel.alerts.url.webhook",
 	"sentinel.field.http.user_agent",
 	"sentinel.list.url",
+	"sentinel.preset.plex",
+	"sentinel.preset.seerr",
 	"streams.tcp",
 	"streams.udp",
 ]);

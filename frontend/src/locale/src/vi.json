@@ -812,6 +812,129 @@
 	"sentinel.alerts.url.webhook": {
 		"defaultMessage": "https://example.com/hooks/npm"
 	},
+	"sentinel.autoban": {
+		"defaultMessage": "Tự động cấm"
+	},
+	"sentinel.autoban.bad-behaviour": {
+		"defaultMessage": "Phản hồi lỗi"
+	},
+	"sentinel.autoban.bad-behaviour.enabled": {
+		"defaultMessage": "Cấm máy khách liên tục nhận phản hồi lỗi"
+	},
+	"sentinel.autoban.bad-behaviour.hint": {
+		"defaultMessage": "Bắt các trình quét dò tìm tệp và trang đăng nhập. Đếm theo từng máy khách và máy chủ."
+	},
+	"sentinel.autoban.codes": {
+		"defaultMessage": "Mã trạng thái"
+	},
+	"sentinel.autoban.detections": {
+		"defaultMessage": "Phát hiện bảo mật"
+	},
+	"sentinel.autoban.detections.enabled": {
+		"defaultMessage": "Cấm máy khách liên tục bị Sentinel từ chối"
+	},
+	"sentinel.autoban.duration": {
+		"defaultMessage": "Lần cấm đầu (giây)"
+	},
+	"sentinel.autoban.enabled": {
+		"defaultMessage": "Tự động cấm máy khách có hành vi xấu"
+	},
+	"sentinel.autoban.escalation": {
+		"defaultMessage": "Thời gian cấm"
+	},
+	"sentinel.autoban.escalation.hint": {
+		"defaultMessage": "Mỗi lần tái phạm, thời gian cấm tăng gấp đôi cho đến mức dài nhất. 0 nghĩa là không bao giờ cấm vĩnh viễn."
+	},
+	"sentinel.autoban.exempt": {
+		"defaultMessage": "Không bao giờ cấm các mạng này"
+	},
+	"sentinel.autoban.exempt.hint": {
+		"defaultMessage": "Mỗi dòng một địa chỉ hoặc CIDR. Thêm mạng gia đình để một thiết bị cấu hình sai ở nhà không khóa bạn bên ngoài."
+	},
+	"sentinel.autoban.hint": {
+		"defaultMessage": "Máy khách bị cấm sẽ không nhận được phản hồi từ bất kỳ máy chủ nào. Mỗi lần tái phạm, thời gian cấm tăng gấp đôi. Các máy chủ đã được loại trừ trong cài đặt bảo vệ sẽ không bao giờ gây ra lệnh cấm."
+	},
+	"sentinel.autoban.max-duration": {
+		"defaultMessage": "Lần cấm dài nhất (giây)"
+	},
+	"sentinel.autoban.off": {
+		"defaultMessage": "Tự động cấm đang tắt"
+	},
+	"sentinel.autoban.on": {
+		"defaultMessage": "Tự động cấm đang bật"
+	},
+	"sentinel.autoban.permanent-after": {
+		"defaultMessage": "Vĩnh viễn từ lần vi phạm"
+	},
+	"sentinel.autoban.threshold": {
+		"defaultMessage": "Cấm sau"
+	},
+	"sentinel.autoban.window": {
+		"defaultMessage": "Trong (giây)"
+	},
+	"sentinel.badge.no-autoban": {
+		"defaultMessage": "Không tự động cấm"
+	},
+	"sentinel.badge.pages": {
+		"defaultMessage": "Chỉ lượt tải trang"
+	},
+	"sentinel.ban.add": {
+		"defaultMessage": "Cấm IP"
+	},
+	"sentinel.ban.created": {
+		"defaultMessage": "{ip} đã bị cấm"
+	},
+	"sentinel.ban.duration": {
+		"defaultMessage": "Cấm trong"
+	},
+	"sentinel.ban.ended": {
+		"defaultMessage": "Đã kết thúc"
+	},
+	"sentinel.ban.ip": {
+		"defaultMessage": "Địa chỉ IP"
+	},
+	"sentinel.ban.ip.hint": {
+		"defaultMessage": "Một địa chỉ IPv6 sẽ cấm toàn bộ mạng /64 của nó, thường là mạng của một hộ gia đình hoặc một máy chủ."
+	},
+	"sentinel.ban.lift": {
+		"defaultMessage": "Gỡ lệnh cấm"
+	},
+	"sentinel.ban.lifted": {
+		"defaultMessage": "Đã gỡ lệnh cấm {ip}"
+	},
+	"sentinel.ban.offenses": {
+		"defaultMessage": "Số lần vi phạm"
+	},
+	"sentinel.ban.permanent": {
+		"defaultMessage": "Vĩnh viễn"
+	},
+	"sentinel.ban.reason": {
+		"defaultMessage": "Lý do"
+	},
+	"sentinel.ban.source.auto": {
+		"defaultMessage": "Tự động"
+	},
+	"sentinel.ban.source.manual": {
+		"defaultMessage": "Thủ công"
+	},
+	"sentinel.ban.submit": {
+		"defaultMessage": "Cấm"
+	},
+	"sentinel.ban.until": {
+		"defaultMessage": "Đến"
+	},
+	"sentinel.bans": {
+		"defaultMessage": "Lệnh cấm"
+	},
+	"sentinel.bans.empty": {
+		"defaultMessage": "Không có máy khách nào bị cấm"
+	},
+	"sentinel.bans.hint": {
+		"defaultMessage": "Máy khách bị cấm không nhận được phản hồi từ bất kỳ máy chủ nào."
+	},
+	"sentinel.bans.show-ended": {
+		"defaultMessage": "Hiện {n, plural, other {# lệnh cấm đã kết thúc}}"
+	},
 	"sentinel.challenge.bind-ua": {
 		"defaultMessage": "Gắn thêm thẻ vượt qua với trình duyệt"
 	},
@@ -853,6 +976,12 @@
 	},
 	"sentinel.challenge.mode.js.hint": {
 		"defaultMessage": "Trình duyệt giải một câu đố nhỏ, thường mất khoảng một giây. Chặn các bot không chạy JavaScript."
+	},
+	"sentinel.challenge.pages": {
+		"defaultMessage": "Chỉ thử thách lượt tải trang"
+	},
+	"sentinel.challenge.pages.hint": {
+		"defaultMessage": "Lệnh gọi API, websocket, luồng media và yêu cầu từ ứng dụng sẽ đi qua mà không bị thử thách. Bật tùy chọn này cho các ứng dụng có máy khách riêng như Plex, Seerr hoặc Jellyfin."
 	},
 	"sentinel.challenge.ttl": {
 		"defaultMessage": "Thời hạn vượt qua"
@@ -910,6 +1039,21 @@
 	},
 	"sentinel.field.ip.src": {
 		"defaultMessage": "IP máy khách"
+	},
+	"sentinel.host-protection": {
+		"defaultMessage": "Bảo vệ"
+	},
+	"sentinel.host.no-autoban": {
+		"defaultMessage": "Không bao giờ cấm máy khách vì máy chủ này"
+	},
+	"sentinel.host.no-autoban.hint": {
+		"defaultMessage": "Phản hồi lỗi và phát hiện trên máy chủ này không được tính vào lệnh cấm tự động. Nên dùng cho Plex, vì ứng dụng của Plex thường nhận phản hồi 401 và 404."
+	},
+	"sentinel.host.rate-limit": {
+		"defaultMessage": "Giới hạn tốc độ: {name} (thay đổi trong thẻ Giới hạn tốc độ)"
+	},
+	"sentinel.host.rate-limit.none": {
+		"defaultMessage": "Không có giới hạn tốc độ (thêm trong thẻ Giới hạn tốc độ)"
 	},
 	"sentinel.list": {
 		"defaultMessage": "Danh sách Sentinel"
@@ -1037,11 +1181,23 @@
 	"sentinel.placeholder.ip.src": {
 		"defaultMessage": "Mỗi dòng một địa chỉ hoặc mạng, vd. 203.0.113.0/24"
 	},
+	"sentinel.preset": {
+		"defaultMessage": "Cấu hình sẵn:"
+	},
 	"sentinel.preset.bad-bots": {
 		"defaultMessage": "Bot xấu (User-Agent)"
 	},
 	"sentinel.preset.bad-bots.description": {
 		"defaultMessage": "User-Agent của các trình quét và bot xấu, từ dự án Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.hint": {
+		"defaultMessage": "Điền sẵn các cài đặt giúp ứng dụng và các máy khách trên TV, di động, máy tính hoạt động bình thường. Xem lại rồi lưu."
+	},
+	"sentinel.preset.plex": {
+		"defaultMessage": "Plex"
+	},
+	"sentinel.preset.seerr": {
+		"defaultMessage": "Seerr"
 	},
 	"sentinel.preset.tor": {
 		"defaultMessage": "Nút thoát Tor"
@@ -1051,6 +1207,60 @@
 	},
 	"sentinel.presets": {
 		"defaultMessage": "Mẫu có sẵn"
+	},
+	"sentinel.rate-limit": {
+		"defaultMessage": "Giới hạn tốc độ"
+	},
+	"sentinel.rate-limit.burst": {
+		"defaultMessage": "Đột biến"
+	},
+	"sentinel.rate-limit.connections": {
+		"defaultMessage": "Kết nối mỗi máy khách"
+	},
+	"sentinel.rate-limit.connections-summary": {
+		"defaultMessage": "tối đa {n} kết nối"
+	},
+	"sentinel.rate-limit.dry-run": {
+		"defaultMessage": "Chạy thử"
+	},
+	"sentinel.rate-limit.dry-run.hint": {
+		"defaultMessage": "Chỉ đếm những yêu cầu sẽ bị từ chối, để bạn kiểm tra giới hạn với lưu lượng thật trước."
+	},
+	"sentinel.rate-limit.exempt": {
+		"defaultMessage": "Không bao giờ giới hạn các mạng này"
+	},
+	"sentinel.rate-limit.hosts": {
+		"defaultMessage": "Máy chủ"
+	},
+	"sentinel.rate-limit.rate": {
+		"defaultMessage": "Giới hạn"
+	},
+	"sentinel.rate-limit.rate.hint": {
+		"defaultMessage": "Theo từng máy khách và máy chủ. Đột biến cho phép các đợt tăng ngắn đi qua, như khi trang tải hình ảnh. 0 kết nối nghĩa là không giới hạn kết nối."
+	},
+	"sentinel.rate-limit.refused": {
+		"defaultMessage": "Đã từ chối (10 phút)"
+	},
+	"sentinel.rate-limit.rps": {
+		"defaultMessage": "Yêu cầu mỗi giây"
+	},
+	"sentinel.rate-limit.summary": {
+		"defaultMessage": "{rps}/giây, đột biến {burst}"
+	},
+	"sentinel.rate-limit.taken": {
+		"defaultMessage": "(trong {name})"
+	},
+	"sentinel.rate-limit.would-limit": {
+		"defaultMessage": "{n} sẽ bị từ chối"
+	},
+	"sentinel.rate-limits": {
+		"defaultMessage": "Giới hạn tốc độ"
+	},
+	"sentinel.rate-limits.empty": {
+		"defaultMessage": "Chưa có giới hạn tốc độ nào"
+	},
+	"sentinel.rate-limits.hint": {
+		"defaultMessage": "Giới hạn tốc độ một máy khách gửi yêu cầu đến máy chủ. Hãy bắt đầu bằng chạy thử."
 	},
 	"sentinel.rule": {
 		"defaultMessage": "Quy tắc bảo mật"
@@ -1150,6 +1360,12 @@
 	},
 	"sentinel.status.444": {
 		"defaultMessage": "444 Đóng kết nối"
+	},
+	"sentinel.tile.bans": {
+		"defaultMessage": "Máy khách bị cấm"
+	},
+	"sentinel.tile.bans.sub": {
+		"defaultMessage": "Bị chặn trên mọi máy chủ"
 	},
 	"sentinel.tile.deploy": {
 		"defaultMessage": "Cấu hình"
