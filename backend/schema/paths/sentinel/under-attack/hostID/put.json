@@ -46,6 +46,10 @@
 						},
 						"config": {
 							"$ref": "../../../../components/sentinel-under-attack-config.json"
+						},
+						"no_autoban": {
+							"type": "boolean",
+							"example": false
 						}
 					}
 				}

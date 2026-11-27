@@ -812,6 +812,129 @@
 	"sentinel.alerts.url.webhook": {
 		"defaultMessage": "https://example.com/hooks/npm"
 	},
+	"sentinel.autoban": {
+		"defaultMessage": "Banimentos automáticos"
+	},
+	"sentinel.autoban.bad-behaviour": {
+		"defaultMessage": "Respostas de erro"
+	},
+	"sentinel.autoban.bad-behaviour.enabled": {
+		"defaultMessage": "Banir clientes que recebem respostas de erro repetidamente"
+	},
+	"sentinel.autoban.bad-behaviour.hint": {
+		"defaultMessage": "Pega scanners que procuram arquivos e logins. Contado por cliente e host."
+	},
+	"sentinel.autoban.codes": {
+		"defaultMessage": "Códigos de status"
+	},
+	"sentinel.autoban.detections": {
+		"defaultMessage": "Detecções de segurança"
+	},
+	"sentinel.autoban.detections.enabled": {
+		"defaultMessage": "Banir clientes que o Sentinel recusa repetidamente"
+	},
+	"sentinel.autoban.duration": {
+		"defaultMessage": "Primeiro banimento (s)"
+	},
+	"sentinel.autoban.enabled": {
+		"defaultMessage": "Banir automaticamente clientes com mau comportamento"
+	},
+	"sentinel.autoban.escalation": {
+		"defaultMessage": "Duração do banimento"
+	},
+	"sentinel.autoban.escalation.hint": {
+		"defaultMessage": "Cada reincidência dobra o banimento até o mais longo. 0 nunca bane permanentemente."
+	},
+	"sentinel.autoban.exempt": {
+		"defaultMessage": "Nunca banir estas redes"
+	},
+	"sentinel.autoban.exempt.hint": {
+		"defaultMessage": "Um endereço ou CIDR por linha. Adicione sua rede doméstica para que um dispositivo mal configurado em casa não bloqueie você."
+	},
+	"sentinel.autoban.hint": {
+		"defaultMessage": "Um cliente banido não recebe resposta de nenhum host. Cada reincidência dobra o banimento. Hosts excluídos nas suas configurações de proteção nunca causam banimento."
+	},
+	"sentinel.autoban.max-duration": {
+		"defaultMessage": "Banimento mais longo (s)"
+	},
+	"sentinel.autoban.off": {
+		"defaultMessage": "Banimentos automáticos desligados"
+	},
+	"sentinel.autoban.on": {
+		"defaultMessage": "Banimentos automáticos ligados"
+	},
+	"sentinel.autoban.permanent-after": {
+		"defaultMessage": "Permanente a partir da infração"
+	},
+	"sentinel.autoban.threshold": {
+		"defaultMessage": "Banir após"
+	},
+	"sentinel.autoban.window": {
+		"defaultMessage": "Dentro de (s)"
+	},
+	"sentinel.badge.no-autoban": {
+		"defaultMessage": "Sem banimentos automáticos"
+	},
+	"sentinel.badge.pages": {
+		"defaultMessage": "Somente carregamentos de página"
+	},
+	"sentinel.ban.add": {
+		"defaultMessage": "Banir IP"
+	},
+	"sentinel.ban.created": {
+		"defaultMessage": "{ip} foi banido"
+	},
+	"sentinel.ban.duration": {
+		"defaultMessage": "Banir por"
+	},
+	"sentinel.ban.ended": {
+		"defaultMessage": "Encerrado"
+	},
+	"sentinel.ban.ip": {
+		"defaultMessage": "Endereço IP"
+	},
+	"sentinel.ban.ip.hint": {
+		"defaultMessage": "Um endereço IPv6 bane toda a sua rede /64, que é o que normalmente uma casa ou servidor recebe."
+	},
+	"sentinel.ban.lift": {
+		"defaultMessage": "Remover banimento"
+	},
+	"sentinel.ban.lifted": {
+		"defaultMessage": "O banimento de {ip} foi removido"
+	},
+	"sentinel.ban.offenses": {
+		"defaultMessage": "Infrações"
+	},
+	"sentinel.ban.permanent": {
+		"defaultMessage": "Permanente"
+	},
+	"sentinel.ban.reason": {
+		"defaultMessage": "Motivo"
+	},
+	"sentinel.ban.source.auto": {
+		"defaultMessage": "Automático"
+	},
+	"sentinel.ban.source.manual": {
+		"defaultMessage": "Manual"
+	},
+	"sentinel.ban.submit": {
+		"defaultMessage": "Banir"
+	},
+	"sentinel.ban.until": {
+		"defaultMessage": "Até"
+	},
+	"sentinel.bans": {
+		"defaultMessage": "Banimentos"
+	},
+	"sentinel.bans.empty": {
+		"defaultMessage": "Nenhum cliente está banido"
+	},
+	"sentinel.bans.hint": {
+		"defaultMessage": "Clientes banidos não recebem resposta de nenhum host."
+	},
+	"sentinel.bans.show-ended": {
+		"defaultMessage": "Mostrar {n, plural, one {# banimento encerrado} other {# banimentos encerrados}}"
+	},
 	"sentinel.challenge.bind-ua": {
 		"defaultMessage": "Vincular o passe também ao navegador"
 	},
@@ -853,6 +976,12 @@
 	},
 	"sentinel.challenge.mode.js.hint": {
 		"defaultMessage": "O navegador resolve um pequeno desafio, geralmente em cerca de um segundo. Barra bots que não executam JavaScript."
+	},
+	"sentinel.challenge.pages": {
+		"defaultMessage": "Desafiar somente carregamentos de página"
+	},
+	"sentinel.challenge.pages.hint": {
+		"defaultMessage": "Chamadas de API, websockets, streams de mídia e requisições de apps passam sem desafio. Ative para apps com clientes próprios, como Plex, Seerr ou Jellyfin."
 	},
 	"sentinel.challenge.ttl": {
 		"defaultMessage": "Passe válido por"
@@ -910,6 +1039,21 @@
 	},
 	"sentinel.field.ip.src": {
 		"defaultMessage": "IP do cliente"
+	},
+	"sentinel.host-protection": {
+		"defaultMessage": "Proteção"
+	},
+	"sentinel.host.no-autoban": {
+		"defaultMessage": "Nunca banir clientes por causa deste host"
+	},
+	"sentinel.host.no-autoban.hint": {
+		"defaultMessage": "Respostas de erro e detecções neste host não contam para banimentos automáticos. Recomendado para o Plex, cujos apps recebem respostas 401 e 404 com frequência."
+	},
+	"sentinel.host.rate-limit": {
+		"defaultMessage": "Limite de taxa: {name} (altere na aba Limites de taxa)"
+	},
+	"sentinel.host.rate-limit.none": {
+		"defaultMessage": "Sem limite de taxa (adicione na aba Limites de taxa)"
 	},
 	"sentinel.list": {
 		"defaultMessage": "Lista do Sentinel"
@@ -1037,11 +1181,23 @@
 	"sentinel.placeholder.ip.src": {
 		"defaultMessage": "Um endereço ou rede por linha, ex.: 203.0.113.0/24"
 	},
+	"sentinel.preset": {
+		"defaultMessage": "Predefinição:"
+	},
 	"sentinel.preset.bad-bots": {
 		"defaultMessage": "Bots maliciosos (User-Agent)"
 	},
 	"sentinel.preset.bad-bots.description": {
 		"defaultMessage": "User-Agents de scanners e bots maliciosos, do projeto Nginx Ultimate Bad Bot Blocker"
+	},
+	"sentinel.preset.hint": {
+		"defaultMessage": "Preenche configurações que mantêm o app e seus clientes de TV, celular e desktop funcionando. Revise e salve."
+	},
+	"sentinel.preset.plex": {
+		"defaultMessage": "Plex"
+	},
+	"sentinel.preset.seerr": {
+		"defaultMessage": "Seerr"
 	},
 	"sentinel.preset.tor": {
 		"defaultMessage": "Nós de saída do Tor"
@@ -1051,6 +1207,60 @@
 	},
 	"sentinel.presets": {
 		"defaultMessage": "Predefinições"
+	},
+	"sentinel.rate-limit": {
+		"defaultMessage": "Limite de taxa"
+	},
+	"sentinel.rate-limit.burst": {
+		"defaultMessage": "Rajada"
+	},
+	"sentinel.rate-limit.connections": {
+		"defaultMessage": "Conexões por cliente"
+	},
+	"sentinel.rate-limit.connections-summary": {
+		"defaultMessage": "no máximo {n} conexões"
+	},
+	"sentinel.rate-limit.dry-run": {
+		"defaultMessage": "Simulação"
+	},
+	"sentinel.rate-limit.dry-run.hint": {
+		"defaultMessage": "Apenas conta o que seria recusado, para você testar o limite com tráfego real primeiro."
+	},
+	"sentinel.rate-limit.exempt": {
+		"defaultMessage": "Nunca limitar estas redes"
+	},
+	"sentinel.rate-limit.hosts": {
+		"defaultMessage": "Hosts"
+	},
+	"sentinel.rate-limit.rate": {
+		"defaultMessage": "Limite"
+	},
+	"sentinel.rate-limit.rate.hint": {
+		"defaultMessage": "Por cliente e host. A rajada deixa passar picos curtos, como uma página carregando imagens. 0 conexões significa sem limite de conexões."
+	},
+	"sentinel.rate-limit.refused": {
+		"defaultMessage": "Recusadas (10 min)"
+	},
+	"sentinel.rate-limit.rps": {
+		"defaultMessage": "Requisições por segundo"
+	},
+	"sentinel.rate-limit.summary": {
+		"defaultMessage": "{rps}/s, rajada {burst}"
+	},
+	"sentinel.rate-limit.taken": {
+		"defaultMessage": "(em {name})"
+	},
+	"sentinel.rate-limit.would-limit": {
+		"defaultMessage": "{n} seriam recusadas"
+	},
+	"sentinel.rate-limits": {
+		"defaultMessage": "Limites de taxa"
+	},
+	"sentinel.rate-limits.empty": {
+		"defaultMessage": "Nenhum limite de taxa ainda"
+	},
+	"sentinel.rate-limits.hint": {
+		"defaultMessage": "Limite a rapidez com que um cliente envia requisições a um host. Comece com uma simulação."
 	},
 	"sentinel.rule": {
 		"defaultMessage": "Regra de segurança"
@@ -1150,6 +1360,12 @@
 	},
 	"sentinel.status.444": {
 		"defaultMessage": "444 Fechar conexão"
+	},
+	"sentinel.tile.bans": {
+		"defaultMessage": "Clientes banidos"
+	},
+	"sentinel.tile.bans.sub": {
+		"defaultMessage": "Bloqueados em todos os hosts"
 	},
 	"sentinel.tile.deploy": {
 		"defaultMessage": "Configuração"

@@ -1,14 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	getSentinelAlerts,
+	getSentinelAutoban,
+	getSentinelBans,
 	getSentinelList,
 	getSentinelLists,
+	getSentinelRateLimits,
 	getSentinelRules,
 	getSentinelStatus,
 	getSentinelUnderAttack,
 	getSentinelUnderAttackEvents,
 	type SentinelAlerts,
+	type SentinelAutoban,
+	type SentinelBan,
 	type SentinelList,
+	type SentinelRateLimit,
 	type SentinelRule,
 	type SentinelStatus,
 	type SentinelUnderAttackEvent,
@@ -73,6 +79,30 @@ const useSentinelAlerts = (options = {}) =>
 		...options,
 	});
 
+const useSentinelBans = (options = {}) =>
+	useQuery<SentinelBan[], Error>({
+		queryKey: ["sentinel-bans"],
+		queryFn: getSentinelBans,
+		staleTime: 10 * 1000,
+		...options,
+	});
+
+const useSentinelAutoban = (options = {}) =>
+	useQuery<SentinelAutoban, Error>({
+		queryKey: ["sentinel-autoban"],
+		queryFn: getSentinelAutoban,
+		staleTime: 0,
+		...options,
+	});
+
+const useSentinelRateLimits = (options = {}) =>
+	useQuery<SentinelRateLimit[], Error>({
+		queryKey: ["sentinel-rate-limits"],
+		queryFn: getSentinelRateLimits,
+		staleTime: 10 * 1000,
+		...options,
+	});
+
 const useInvalidateSentinel = () => {
 	const queryClient = useQueryClient();
 	return () => {
@@ -83,6 +113,9 @@ const useInvalidateSentinel = () => {
 		queryClient.invalidateQueries({ queryKey: ["sentinel-under-attack"] });
 		queryClient.invalidateQueries({ queryKey: ["sentinel-under-attack-events"] });
 		queryClient.invalidateQueries({ queryKey: ["sentinel-alerts"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-bans"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-autoban"] });
+		queryClient.invalidateQueries({ queryKey: ["sentinel-rate-limits"] });
 		queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
 	};
 };
@@ -106,8 +139,11 @@ const useSetSentinelList = () => {
 export {
 	useInvalidateSentinel,
 	useSentinelAlerts,
+	useSentinelAutoban,
+	useSentinelBans,
 	useSentinelList,
 	useSentinelLists,
+	useSentinelRateLimits,
 	useSentinelRules,
 	useSentinelStatus,
 	useSentinelUnderAttack,

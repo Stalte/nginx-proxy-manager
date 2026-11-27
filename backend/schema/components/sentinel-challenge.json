@@ -30,6 +30,11 @@
 				"ip_ua"
 			],
 			"example": "ip"
+		},
+		"pages": {
+			"type": "boolean",
+			"description": "Only challenge page loads (browser navigations), not API, websocket or app requests",
+			"example": false
 		}
 	}
 }

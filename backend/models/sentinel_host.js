@@ -3,9 +3,12 @@
 
 import { Model } from "objection";
 import db from "../db.js";
+import { convertBoolFieldsToInt, convertIntFieldsToBool } from "../lib/helpers.js";
 import now from "./now_helper.js";
 
 Model.knex(db());
+
+const boolFields = ["no_autoban"];
 
 // Sentinel settings of a proxy host ("under attack" mode)
 class SentinelHost extends Model {
@@ -19,6 +22,16 @@ class SentinelHost extends Model {
 
 	$beforeUpdate() {
 		this.modified_on = now();
+	}
+
+	$parseDatabaseJson(json) {
+		const thisJson = super.$parseDatabaseJson(json);
+		return convertIntFieldsToBool(thisJson, boolFields);
+	}
+
+	$formatDatabaseJson(json) {
+		const thisJson = convertBoolFieldsToInt(json, boolFields);
+		return super.$formatDatabaseJson(thisJson);
 	}
 
 	static get name() {

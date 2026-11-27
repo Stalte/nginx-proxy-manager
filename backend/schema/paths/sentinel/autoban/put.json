@@ -1,0 +1,128 @@
+{
+	"operationId": "updateSentinelAutoban",
+	"summary": "Update the automatic ban settings",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"enabled": {
+							"type": "boolean",
+							"example": false
+						},
+						"detections": {
+							"type": "boolean",
+							"description": "Ban clients Sentinel keeps refusing",
+							"example": true
+						},
+						"threshold": {
+							"type": "integer",
+							"minimum": 3,
+							"maximum": 100000,
+							"example": 20
+						},
+						"window_s": {
+							"type": "integer",
+							"minimum": 60,
+							"maximum": 86400,
+							"example": 600
+						},
+						"bad_behaviour": {
+							"type": "boolean",
+							"description": "Ban clients that keep getting error responses",
+							"example": true
+						},
+						"bad_behaviour_codes": {
+							"type": "array",
+							"maxItems": 30,
+							"items": {
+								"type": "integer",
+								"minimum": 400,
+								"maximum": 599
+							},
+							"example": [
+								400,
+								401,
+								403,
+								404,
+								405,
+								429,
+								444
+							]
+						},
+						"bad_behaviour_threshold": {
+							"type": "integer",
+							"minimum": 3,
+							"maximum": 100000,
+							"example": 30
+						},
+						"bad_behaviour_window_s": {
+							"type": "integer",
+							"minimum": 10,
+							"maximum": 3600,
+							"example": 60
+						},
+						"duration_s": {
+							"type": "integer",
+							"minimum": 60,
+							"maximum": 2592000,
+							"example": 900
+						},
+						"max_duration_s": {
+							"type": "integer",
+							"minimum": 60,
+							"maximum": 2592000,
+							"example": 604800
+						},
+						"permanent_after": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 100,
+							"description": "Permanent ban from this offense on (0: never)",
+							"example": 0
+						},
+						"exempt": {
+							"type": "array",
+							"maxItems": 1000,
+							"items": {
+								"type": "string",
+								"maxLength": 64
+							},
+							"example": [
+								"192.168.0.0/16"
+							],
+							"description": "Networks that are never banned"
+						}
+					},
+					"minProperties": 1
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-autoban-object.json"
+					}
+				}
+			}
+		}
+	}
+}

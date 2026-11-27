@@ -14,7 +14,11 @@ Changes in this copy:
   and refused requests are flagged for the traffic counters.
 - corvus/traffic.lua, corvus/host.lua, corvus/hostlog.lua, corvus/verify.lua and the
   corvus/status-*.lua entry points are new (Nginx Proxy Manager). traffic.lua replaces
-  the Corvus access-log traffic collector for the automatic "under attack" mode.
+  the Corvus access-log traffic collector for the automatic "under attack" mode and
+  also counts rate-limited requests.
+- corvus/rules.lua: challenges and the "under attack" mode can be limited to page
+  loads (so app, API and websocket clients are not challenged), and the automatic-ban
+  counters run in the log phase per proxy host, which can be left out of them.
 - The backend code that writes their configuration (backend/lib/sentinel/) is a
   JavaScript port of parts of the Corvus control plane (Go), under the same license.
 

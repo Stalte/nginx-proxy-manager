@@ -4,21 +4,25 @@ import { compile, PATHS } from "../lib/sentinel/compile.js";
 import { fetchFeed } from "../lib/sentinel/feeds.js";
 import * as geoip from "../lib/sentinel/geoip.js";
 import { cleanup as cleanupLists, writeFile as writeListFile } from "../lib/sentinel/ipset.js";
+import * as ratelimit from "../lib/sentinel/ratelimit.js";
 import { ensureSecrets } from "../lib/sentinel/secrets.js";
+import { statusRequest } from "../lib/sentinel/status.js";
 import * as validate from "../lib/sentinel/validate.js";
 import { sentinel as logger } from "../logger.js";
 import proxyHostModel from "../models/proxy_host.js";
 import redirectionHostModel from "../models/redirection_host.js";
 import hostModel from "../models/sentinel_host.js";
 import listModel from "../models/sentinel_list.js";
+import rateLimitModel from "../models/sentinel_rate_limit.js";
 import ruleModel from "../models/sentinel_rule.js";
 import internalAuditLog from "./audit-log.js";
 import internalNginx from "./nginx.js";
+import internalAutoban from "./sentinel-autoban.js";
 import internalUnderAttack from "./sentinel-underattack.js";
 
 // Bumped when the per-host Sentinel template changes, so existing host configs are
 // written again once at startup.
-const HOST_TEMPLATE_VERSION = 2;
+const HOST_TEMPLATE_VERSION = 3;
 const HOST_TEMPLATE_MARKER = `${PATHS.dir}/.host-template-version`;
 const FEED_TICK_MS = 60 * 1000;
 const FEED_RETRY_MS = 15 * 60 * 1000;
@@ -41,6 +45,58 @@ const toValidationError = (err) => {
 	return err;
 };
 
+// Files a deployment writes: rules.json and the rate limit includes. A deployment nginx
+// refuses puts them all back.
+const RL_HTTP = `${PATHS.dir}/nginx/rate-limits.conf`;
+const RL_HOSTS = `${PATHS.dir}/hosts`;
+
+const readDir = (dir) => {
+	const out = new Map();
+	try {
+		for (const f of fs.readdirSync(dir)) {
+			if (f.endsWith(".conf")) out.set(f, fs.readFileSync(`${dir}/${f}`));
+		}
+	} catch {
+		// not there yet
+	}
+	return out;
+};
+
+const snapshot = () => {
+	const read = (f) => {
+		try {
+			return fs.readFileSync(f);
+		} catch {
+			return null;
+		}
+	};
+	return { rules: read(PATHS.rules), rlHttp: read(RL_HTTP), hosts: readDir(RL_HOSTS) };
+};
+
+const restore = (snap) => {
+	const put = (f, data) => {
+		if (data === null) {
+			fs.rmSync(f, { force: true });
+		} else {
+			fs.writeFileSync(f, data);
+		}
+	};
+	put(PATHS.rules, snap.rules);
+	put(RL_HTTP, snap.rlHttp);
+	syncDir(RL_HOSTS, snap.hosts);
+};
+
+// Makes dir hold exactly these .conf files
+const syncDir = (dir, files) => {
+	fs.mkdirSync(dir, { recursive: true });
+	for (const f of fs.readdirSync(dir)) {
+		if (f.endsWith(".conf") && !files.has(f)) fs.rmSync(`${dir}/${f}`, { force: true });
+	}
+	for (const [f, data] of files) {
+		fs.writeFileSync(`${dir}/${f}`, data);
+	}
+};
+
 const feedRunning = new Set();
 let feedTimer = null;
 let geoRunning = false;
@@ -56,22 +112,13 @@ const internalSentinel = {
 	 */
 	deploy: () =>
 		serialize(async () => {
-			let previous = null;
-			try {
-				previous = fs.readFileSync(PATHS.rules);
-			} catch {
-				// first deployment
-			}
+			const previous = snapshot();
 			const { config, lists, listHashes, usesCountry } = await internalSentinel.writeRules();
 
 			try {
 				await internalNginx.test();
 			} catch (err) {
-				if (previous !== null) {
-					fs.writeFileSync(PATHS.rules, previous);
-				} else {
-					fs.unlinkSync(PATHS.rules);
-				}
+				restore(previous);
 				const msg = String(err.message || err)
 					.split("\n")
 					.filter((l) => l && !l.includes("/var/log/nginx/error.log"))
@@ -114,7 +161,7 @@ const internalSentinel = {
 	writeRules: async () => {
 		fs.mkdirSync(PATHS.dir, { recursive: true });
 		ensureSecrets(PATHS.secrets);
-		const [rules, lists, proxyHosts, redirectionHosts, hostSettings] = await Promise.all([
+		const [rules, lists, proxyHosts, redirectionHosts, hostSettings, limits] = await Promise.all([
 			ruleModel
 				.query()
 				.where("is_deleted", 0)
@@ -123,6 +170,7 @@ const internalSentinel = {
 			proxyHostModel.query().where("is_deleted", 0).select("id", "enabled", "block_exploits"),
 			redirectionHostModel.query().where("is_deleted", 0).select("id", "enabled", "block_exploits"),
 			hostModel.query(),
+			rateLimitModel.query().where("is_deleted", 0).orderBy("id"),
 		]);
 		const { config, listHashes, usesCountry } = compile({
 			rules,
@@ -134,6 +182,24 @@ const internalSentinel = {
 		const tmp = `${PATHS.rules}.tmp`;
 		fs.writeFileSync(tmp, JSON.stringify(config));
 		fs.renameSync(tmp, PATHS.rules);
+
+		// rate limits: zones at http level, one include per limited proxy host
+		const hostIds = new Set(proxyHosts.map((h) => Number(h.id)));
+		const policies = [];
+		for (const row of limits) {
+			try {
+				policies.push({ ...ratelimit.policy(row, (id) => hostIds.has(id)), id: row.id });
+			} catch (err) {
+				logger.error(
+					`Sentinel rate limit #${row.id} "${row.name}" is invalid and was left out: ${err.message}`,
+				);
+			}
+		}
+		const live = new Set(proxyHosts.filter((h) => h.enabled).map((h) => Number(h.id)));
+		const rl = ratelimit.render(policies, live);
+		fs.mkdirSync(`${PATHS.dir}/nginx`, { recursive: true });
+		fs.writeFileSync(RL_HTTP, rl.http);
+		syncDir(RL_HOSTS, new Map([...rl.hosts].map(([id, conf]) => [`${id}.conf`, conf])));
 		return { config, lists, listHashes, usesCountry };
 	},
 
@@ -182,6 +248,7 @@ const internalSentinel = {
 			logger.error(`Initial deployment failed: ${err.message}`);
 		}
 		internalUnderAttack.start();
+		internalAutoban.start();
 		if (!feedTimer) {
 			setTimeout(() => internalSentinel.refreshDueFeeds(), 20 * 1000);
 			feedTimer = setInterval(() => internalSentinel.refreshDueFeeds(), FEED_TICK_MS);
@@ -637,6 +704,137 @@ const internalSentinel = {
 	setAlerts: (access, data) => internalUnderAttack.setAlerts(access, data),
 	testAlert: (access) => internalUnderAttack.testAlert(access),
 
+	// ------------------------------------------------------------------ rate limits
+
+	/**
+	 * Policies, each with what it refused (or would have refused, in a dry run) over the
+	 * last 10 minutes on its hosts.
+	 */
+	getRateLimits: async (access) => {
+		await access.can("sentinel:list");
+		const rows = await rateLimitModel.query().where("is_deleted", 0).orderBy("id");
+		let traffic = {};
+		try {
+			traffic = await (await statusRequest("/traffic?window=600")).json();
+		} catch {
+			// nginx not reachable: no numbers
+		}
+		return rows.map((r) => {
+			const stats = { limited: 0, would_limit: 0 };
+			for (const h of r.host_ids || []) {
+				const t = traffic[String(h)];
+				if (t) {
+					stats.limited += Number(t.l) || 0;
+					stats.would_limit += Number(t.dr) || 0;
+				}
+			}
+			return { ...r, stats };
+		});
+	},
+
+	getRateLimit: async (access, id) => {
+		await access.can("sentinel:get");
+		const row = await rateLimitModel.query().where("is_deleted", 0).andWhere("id", id).first();
+		if (!row) {
+			throw new errs.ItemNotFoundError(id);
+		}
+		return row;
+	},
+
+	validateRateLimit: async (data, id = 0) => {
+		const [hosts, others] = await Promise.all([
+			proxyHostModel.query().where("is_deleted", 0).select("id", "domain_names"),
+			rateLimitModel.query().where("is_deleted", 0).whereNot("id", id),
+		]);
+		const byId = new Map(hosts.map((h) => [Number(h.id), h]));
+		let clean;
+		try {
+			clean = ratelimit.policy(data, (h) => byId.has(h));
+		} catch (err) {
+			throw toValidationError(err);
+		}
+		const taken = ratelimit.conflicts([...others, { ...clean, id }]);
+		if (clean.enabled && taken.length) {
+			const names = taken.map((h) => byId.get(h)?.domain_names?.[0] || `#${h}`).join(", ");
+			throw new errs.ValidationError(`these hosts already have another rate limit: ${names}`);
+		}
+		return clean;
+	},
+
+	createRateLimit: async (access, data) => {
+		await access.can("sentinel:update");
+		const count = await rateLimitModel.query().where("is_deleted", 0).resultSize();
+		if (count >= ratelimit.MAX_POLICIES) {
+			throw new errs.ValidationError(`at most ${ratelimit.MAX_POLICIES} rate limits`);
+		}
+		const clean = await internalSentinel.validateRateLimit(data);
+		const row = await internalSentinel.apply(
+			() => rateLimitModel.query().insertAndFetch({ ...clean, owner_user_id: access.token.getUserId(1) }),
+			(created) => rateLimitModel.query().deleteById(created.id),
+		);
+		await internalAuditLog.add(access, {
+			action: "created",
+			object_type: "sentinel-rate-limit",
+			object_id: row.id,
+			meta: clean,
+		});
+		return row;
+	},
+
+	updateRateLimit: async (access, id, data) => {
+		await access.can("sentinel:update");
+		const before = await internalSentinel.getRateLimit(access, id);
+		const keys = [
+			"name",
+			"enabled",
+			"requests_per_second",
+			"burst",
+			"max_connections",
+			"status_code",
+			"dry_run",
+			"exempt",
+			"host_ids",
+		];
+		const merged = { ...Object.fromEntries(keys.map((k) => [k, before[k]])), ...data };
+		const clean = await internalSentinel.validateRateLimit(merged, id);
+		const restoreRow = Object.fromEntries(keys.map((k) => [k, before[k]]));
+		await internalSentinel.apply(
+			() => rateLimitModel.query().patchAndFetchById(id, clean),
+			() => rateLimitModel.query().patchAndFetchById(id, restoreRow),
+		);
+		await internalAuditLog.add(access, {
+			action: "updated",
+			object_type: "sentinel-rate-limit",
+			object_id: id,
+			meta: clean,
+		});
+		return internalSentinel.getRateLimit(access, id);
+	},
+
+	deleteRateLimit: async (access, id) => {
+		await access.can("sentinel:update");
+		const before = await internalSentinel.getRateLimit(access, id);
+		await internalSentinel.apply(
+			() => rateLimitModel.query().patchAndFetchById(id, { is_deleted: true }),
+			() => rateLimitModel.query().patchAndFetchById(id, { is_deleted: false }),
+		);
+		await internalAuditLog.add(access, {
+			action: "deleted",
+			object_type: "sentinel-rate-limit",
+			object_id: id,
+			meta: { name: before.name },
+		});
+		return true;
+	},
+
+	// ------------------------------------------------------------------ bans
+
+	getBans: (access) => internalAutoban.list(access),
+	createBan: (access, data) => internalAutoban.ban(access, data),
+	liftBan: (access, id) => internalAutoban.lift(access, id),
+	getAutobanSettings: (access) => internalAutoban.getSettings(access),
+	setAutobanSettings: (access, data) => internalAutoban.setSettings(access, data),
+
 	// ------------------------------------------------------------------ status
 
 	status: async (access) => {
@@ -644,6 +842,7 @@ const internalSentinel = {
 		return {
 			deploy: { ...lastDeploy },
 			geoip: { ...geoip.status(PATHS.geo), downloading: geoRunning, error: internalSentinel.geoError },
+			bans: { active: await internalAutoban.count(), sync: internalAutoban.syncStatus() },
 			under_attack: {
 				active: (await internalUnderAttack.list(access)).filter((h) => h.active).length,
 				sync: internalUnderAttack.syncStatus(),

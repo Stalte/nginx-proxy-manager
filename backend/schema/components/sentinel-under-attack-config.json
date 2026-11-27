@@ -54,6 +54,11 @@
 			"minimum": 60,
 			"maximum": 86400,
 			"example": 900
+		},
+		"pages": {
+			"type": "boolean",
+			"description": "Only challenge page loads (browser navigations), not API, websocket or app requests",
+			"example": false
 		}
 	}
 }

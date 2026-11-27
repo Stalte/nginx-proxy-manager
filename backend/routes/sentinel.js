@@ -279,4 +279,115 @@ router
 		}),
 	);
 
+/**
+ * /api/sentinel/rate-limits
+ */
+router
+	.route("/rate-limits")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.getRateLimits(res.locals.access));
+		}),
+	)
+	.post(
+		handle(async (req, res) => {
+			const payload = await apiValidator(getValidationSchema("/sentinel/rate-limits", "post"), req.body);
+			res.status(201).send(await internalSentinel.createRateLimit(res.locals.access, payload));
+		}),
+	);
+
+/**
+ * /api/sentinel/rate-limits/123
+ */
+router
+	.route("/rate-limits/:rate_limit_id")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.rate_limit_id);
+			res.status(200).send(await internalSentinel.getRateLimit(res.locals.access, id));
+		}),
+	)
+	.put(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.rate_limit_id);
+			const payload = await apiValidator(
+				getValidationSchema("/sentinel/rate-limits/{rateLimitID}", "put"),
+				req.body,
+			);
+			res.status(200).send(await internalSentinel.updateRateLimit(res.locals.access, id, payload));
+		}),
+	)
+	.delete(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.rate_limit_id);
+			res.status(200).send(await internalSentinel.deleteRateLimit(res.locals.access, id));
+		}),
+	);
+
+/**
+ * /api/sentinel/bans
+ */
+router
+	.route("/bans")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.getBans(res.locals.access));
+		}),
+	)
+	.post(
+		handle(async (req, res) => {
+			const payload = await apiValidator(getValidationSchema("/sentinel/bans", "post"), req.body);
+			res.status(201).send(await internalSentinel.createBan(res.locals.access, payload));
+		}),
+	);
+
+/**
+ * DELETE /api/sentinel/bans/123
+ */
+router
+	.route("/bans/:ban_id")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.delete(
+		handle(async (req, res) => {
+			const id = await idParam(req.params.ban_id);
+			res.status(200).send(await internalSentinel.liftBan(res.locals.access, id));
+		}),
+	);
+
+/**
+ * /api/sentinel/autoban
+ */
+router
+	.route("/autoban")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+	.get(
+		handle(async (_req, res) => {
+			res.status(200).send(await internalSentinel.getAutobanSettings(res.locals.access));
+		}),
+	)
+	.put(
+		handle(async (req, res) => {
+			const payload = await apiValidator(getValidationSchema("/sentinel/autoban", "put"), req.body);
+			res.status(200).send(await internalSentinel.setAutobanSettings(res.locals.access, payload));
+		}),
+	);
+
 export default router;

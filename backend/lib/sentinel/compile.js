@@ -29,6 +29,7 @@ const underAttackConfig = (row) => {
 			difficulty: config.difficulty,
 			ttl: config.ttl,
 			bind: config.bind,
+			pages: config.pages,
 		};
 	} catch (err) {
 		logger.error(`Sentinel under attack settings of proxy host #${row.proxy_host_id} are invalid: ${err.message}`);
@@ -178,9 +179,13 @@ export const compile = ({ rules, lists, proxyHosts, redirectionHosts, hostSettin
 		scopes.forEach((sc, i) => {
 			if (sc.all || sc.hosts.has(Number(h.id))) hj.rules.push(i + 1);
 		});
-		const ua = underAttackConfig(settingsByHost.get(Number(h.id)));
+		const hs = settingsByHost.get(Number(h.id));
+		const ua = underAttackConfig(hs);
 		if (ua) {
 			hj.under_attack = ua;
+		}
+		if (hs?.no_autoban) {
+			hj.no_autoban = true;
 		}
 		config.hosts[String(h.id)] = hj;
 	}

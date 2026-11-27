@@ -10,11 +10,13 @@ import os from "node:os";
 import path from "node:path";
 import { describe, it } from "node:test";
 import { buildRequest, underAttackText } from "../lib/sentinel/alerts.js";
+import * as autoban from "../lib/sentinel/autoban.js";
 import { compile } from "../lib/sentinel/compile.js";
 import { parse as parseFeed } from "../lib/sentinel/feeds.js";
 import { CSVParser, encode as encodeGeo, lookup as geoLookup } from "../lib/sentinel/geoip.js";
-import { encodeNet, isPublicIP, normalizeCidrs, parseEntry, parseIPv6 } from "../lib/sentinel/ip.js";
+import { encodeNet, isPublicIP, normalizeCidrs, parseIPv6 } from "../lib/sentinel/ip.js";
 import { Builder, checkFile, encode, fromEntries, writeFile } from "../lib/sentinel/ipset.js";
+import * as ratelimit from "../lib/sentinel/ratelimit.js";
 import * as underAttackLogic from "../lib/sentinel/underattack.js";
 import {
 	feedURL,
@@ -372,7 +374,7 @@ describe("browser challenge and under attack mode", () => {
 
 	it("normalises challenge rules and rejects bad settings", () => {
 		const r = securityRule({ name: "c", action: "challenge", expression: { groups } }, () => "");
-		assert.deepEqual(r.challenge, { mode: "js", difficulty: 16, ttl: 86400, bind: "ip" });
+		assert.deepEqual(r.challenge, { mode: "js", difficulty: 16, ttl: 86400, bind: "ip", pages: false });
 		const c = securityRule(
 			{ name: "c", action: "challenge", challenge: { mode: "cookie", ttl: 600 }, expression: { groups } },
 			() => "",
@@ -395,6 +397,7 @@ describe("browser challenge and under attack mode", () => {
 			difficulty: 16,
 			ttl: 3600,
 			bind: "ip",
+			pages: false,
 			rps: 200,
 			blocked_pct: 50,
 			window_s: 30,
@@ -442,13 +445,20 @@ describe("browser challenge and under attack mode", () => {
 			},
 			{ dir: tmpDir(), lists: tmpDir(), geo: "/nonexistent" },
 		);
-		assert.deepEqual(config.rules[0].challenge, { mode: "js", difficulty: 18, ttl: 86400, bind: "ip" });
+		assert.deepEqual(config.rules[0].challenge, {
+			mode: "js",
+			difficulty: 18,
+			ttl: 86400,
+			bind: "ip",
+			pages: false,
+		});
 		assert.deepEqual(config.hosts["1"].under_attack, {
 			on: true,
 			mode: "cookie",
 			difficulty: 16,
 			ttl: 3600,
 			bind: "ip",
+			pages: false,
 		});
 		assert.equal(config.hosts["2"].under_attack.on, false);
 		assert.equal(config.hosts["4"].under_attack, undefined);
@@ -530,5 +540,148 @@ describe("browser challenge and under attack mode", () => {
 		assert.throws(() => validateAlerts({ url: "ftp://x" }));
 		assert.throws(() => validateAlerts({ type: "pager" }));
 		assert.equal(validateAlerts({ enabled: true, type: "ntfy", url: "http://10.0.0.2/alerts" }).type, "ntfy");
+	});
+});
+
+describe("automatic bans", () => {
+	it("bans an IPv4 address or an IPv6 /64", () => {
+		assert.equal(autoban.banKey(" 203.0.113.7 "), "203.0.113.7");
+		assert.equal(autoban.banKey("2001:db8:1:2:3:4:5:6"), "2001:db8:1:2::/64");
+		assert.equal(autoban.banKey("2001:db8:1:2::/64"), "2001:db8:1:2::/64");
+		assert.equal(autoban.banKey("2001:db8::/48"), "");
+		assert.equal(autoban.banKey("example.com"), "");
+		assert.equal(autoban.banKey(""), "");
+		// the gateway keys an IPv6 client by its first four groups in full
+		assert.equal(autoban.gatewayKey("2001:db8:1:2::/64"), "2001:0db8:0001:0002");
+		assert.equal(autoban.gatewayKey("203.0.113.7"), "203.0.113.7");
+		assert.equal(autoban.hitKey("2001:0db8:0001:0002"), "2001:db8:1:2::/64");
+		assert.equal(autoban.hitKey("198.51.100.1"), "198.51.100.1");
+		assert.equal(autoban.hitKey("junk"), "");
+	});
+
+	it("never bans loopback or exempt networks", () => {
+		assert.equal(autoban.exemptKey("127.0.0.1", []), true);
+		assert.equal(autoban.exemptKey("::/64", []), true);
+		assert.equal(autoban.exemptKey("192.168.1.5", ["192.168.0.0/16"]), true);
+		assert.equal(autoban.exemptKey("2001:db8:1:2::/64", ["2001:db8:1:2::5/128"]), true);
+		assert.equal(autoban.exemptKey("203.0.113.7", ["192.168.0.0/16"]), false);
+		assert.equal(autoban.exemptKey("", []), true);
+	});
+
+	it("doubles the ban for each repeat offense", () => {
+		const set = autoban.settings({ duration_s: 900, max_duration_s: 3600 });
+		assert.equal(autoban.banUntil(set, 1, 0), 900 * 1000);
+		assert.equal(autoban.banUntil(set, 2, 0), 1800 * 1000);
+		assert.equal(autoban.banUntil(set, 3, 0), 3600 * 1000);
+		assert.equal(autoban.banUntil(set, 9, 0), 3600 * 1000);
+		const perm = autoban.settings({ permanent_after: 3 });
+		assert.notEqual(autoban.banUntil(perm, 2, 0), null);
+		assert.equal(autoban.banUntil(perm, 3, 0), null);
+	});
+
+	it("validates the settings", () => {
+		const def = autoban.settings({});
+		assert.equal(def.enabled, false);
+		assert.deepEqual(def.bad_behaviour_codes, autoban.DEFAULT_CODES);
+		assert.deepEqual(autoban.settings({ bad_behaviour_codes: [404, 403, 404] }).bad_behaviour_codes, [403, 404]);
+		assert.deepEqual(autoban.settings({ exempt: ["10.1.2.3/8"] }).exempt, ["10.0.0.0/8"]);
+		assert.throws(() => autoban.settings({ threshold: 1 }));
+		assert.throws(() => autoban.settings({ bad_behaviour_codes: [200] }));
+		assert.throws(() => autoban.settings({ bad_behaviour_codes: [] }));
+		assert.equal(autoban.settings({ bad_behaviour: false, bad_behaviour_codes: [] }).bad_behaviour, false);
+		assert.throws(() => autoban.settings({ duration_s: 3600, max_duration_s: 60 }));
+		assert.throws(() => autoban.settings({ permanent_after: 1 }));
+		assert.throws(() => autoban.settings({ exempt: ["not-a-network"] }));
+	});
+
+	it("builds the gateway settings", () => {
+		assert.deepEqual(autoban.gatewayConfig(autoban.settings({})), { enabled: false });
+		const cfg = autoban.gatewayConfig(autoban.settings({ enabled: true, exempt: ["10.0.0.0/8"] }));
+		assert.equal(cfg.enabled, true);
+		assert.deepEqual(cfg.codes, autoban.DEFAULT_CODES);
+		assert.deepEqual(cfg.det, { threshold: 20, window: 600 });
+		assert.deepEqual(cfg.exempt, ["127.0.0.0/8", "::1/128", "10.0.0.0/8"].map(encodeNet));
+		// detections only: the error-response detector is off
+		const det = autoban.gatewayConfig(autoban.settings({ enabled: true, bad_behaviour: false }));
+		assert.deepEqual(det.codes, []);
+		assert.ok(det.det);
+		const bb = autoban.gatewayConfig(autoban.settings({ enabled: true, detections: false }));
+		assert.equal(bb.det, undefined);
+		assert.deepEqual(
+			autoban.gatewayConfig(autoban.settings({ enabled: true, detections: false, bad_behaviour: false })),
+			{ enabled: false },
+		);
+	});
+
+	it("describes why a client was banned", () => {
+		assert.equal(
+			autoban.hitReason({ host: "a.example", window: 60, counts: { 404: 12, 403: 3, 401: 0 } }),
+			"12×404, 3×403 on a.example in 60 s",
+		);
+		assert.equal(
+			autoban.hitReason({ kind: "detections", host: "a.example", window: 600, counts: { blocked: 20 } }),
+			"20 requests refused by Sentinel on a.example in 600 s",
+		);
+	});
+});
+
+describe("rate limits", () => {
+	it("validates a policy", () => {
+		const p = ratelimit.policy({ name: "Login", host_ids: [2, 2, 3] }, (h) => h !== 9);
+		assert.equal(p.requests_per_second, 10);
+		assert.equal(p.burst, 20);
+		assert.equal(p.status_code, 429);
+		assert.equal(p.enabled, true);
+		assert.equal(p.dry_run, false);
+		assert.deepEqual(p.host_ids, [2, 3]);
+		assert.throws(() => ratelimit.policy({ name: "x", host_ids: [9] }, (h) => h !== 9));
+		assert.throws(() => ratelimit.policy({ name: "" }));
+		assert.throws(() => ratelimit.policy({ name: "a;b" }));
+		assert.throws(() => ratelimit.policy({ name: "x", requests_per_second: 0 }));
+		assert.throws(() => ratelimit.policy({ name: "x", status_code: 500 }));
+		assert.throws(() => ratelimit.policy({ name: "x", exempt: ["}; evil"] }));
+	});
+
+	it("finds hosts in more than one enabled policy", () => {
+		assert.deepEqual(
+			ratelimit.conflicts([
+				{ id: 1, enabled: true, host_ids: [1, 2] },
+				{ id: 2, enabled: true, host_ids: [2, 3] },
+				{ id: 3, enabled: false, host_ids: [3] },
+			]),
+			[2],
+		);
+	});
+
+	it("renders the zones and the host includes", () => {
+		const out = ratelimit.render(
+			[
+				{
+					id: 4,
+					name: "Seerr",
+					enabled: true,
+					requests_per_second: 5,
+					burst: 10,
+					max_connections: 20,
+					status_code: 429,
+					dry_run: true,
+					exempt: ["10.0.0.0/8"],
+					host_ids: [1, 2],
+				},
+				{ id: 5, name: "Off", enabled: false, requests_per_second: 1, burst: 0, exempt: [], host_ids: [3] },
+			],
+			new Set([1, 3]),
+		);
+		assert.match(out.http, /geo \$corvus_rl4_exempt \{\n\tdefault 0;\n\t10\.0\.0\.0\/8 1;\n\}/);
+		assert.match(out.http, /limit_req_zone \$corvus_rl4_key zone=corvus_rl4:10m rate=5r\/s;/);
+		assert.match(out.http, /limit_conn_zone \$corvus_rl4_key zone=corvus_cl4:10m;/);
+		assert.doesNotMatch(out.http, /corvus_rl5/);
+		// only enabled hosts get an include
+		assert.deepEqual([...out.hosts.keys()], [1]);
+		const host = out.hosts.get(1);
+		assert.match(host, /limit_req zone=corvus_rl4 burst=10 nodelay;/);
+		assert.match(host, /limit_req_dry_run on;/);
+		assert.match(host, /limit_conn corvus_cl4 20;/);
+		assert.match(host, /limit_conn_dry_run on;/);
 	});
 });

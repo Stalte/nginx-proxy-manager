@@ -11,7 +11,9 @@
 		"active",
 		"since",
 		"until",
-		"reason"
+		"reason",
+		"no_autoban",
+		"rate_limit"
 	],
 	"properties": {
 		"proxy_host_id": {
@@ -51,6 +53,25 @@
 		},
 		"reason": {
 			"type": "string"
+		},
+		"no_autoban": {
+			"type": "boolean",
+			"description": "Never ban clients automatically because of this host"
+		},
+		"rate_limit": {
+			"type": [
+				"object",
+				"null"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"id": {
+					"$ref": "../common.json#/properties/id"
+				},
+				"name": {
+					"type": "string"
+				}
+			}
 		}
 	}
 }

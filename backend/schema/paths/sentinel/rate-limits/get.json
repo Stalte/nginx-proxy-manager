@@ -1,0 +1,29 @@
+{
+	"operationId": "getSentinelRateLimits",
+	"summary": "Get all rate limit policies",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"type": "array",
+						"items": {
+							"$ref": "../../../components/sentinel-rate-limit-object.json"
+						}
+					}
+				}
+			}
+		}
+	}
+}

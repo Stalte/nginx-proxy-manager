@@ -26,10 +26,20 @@ function _M.count(key)
   local suffix = tostring(key) .. ":" .. bucket(ngx.time())
   local ttl = _M.KEEP * _M.BUCKET
   d:incr("r:" .. suffix, 1, 0, ttl)
-  if ngx.ctx.corvus_blocked then d:incr("b:" .. suffix, 1, 0, ttl) end
+  -- rate limits (nginx limit_req / limit_conn): refused, or refused in a dry run
+  local rl = ngx.var.limit_req_status
+  local cl = ngx.var.limit_conn_status
+  local limited = rl == "REJECTED" or cl == "REJECTED"
+  if ngx.ctx.corvus_blocked or limited then d:incr("b:" .. suffix, 1, 0, ttl) end
+  if limited then
+    d:incr("l:" .. suffix, 1, 0, ttl)
+  elseif rl == "REJECTED_DRY_RUN" or cl == "REJECTED_DRY_RUN" then
+    d:incr("dr:" .. suffix, 1, 0, ttl)
+  end
 end
 
--- Sums per host over the last `window` seconds: { ["<host>"] = { r, b, secs } }. Whole
+-- Sums per host over the last `window` seconds: { ["<host>"] = { r, b, l, dr, secs } }
+-- (requests, blocked or rate limited, rate limited, would have been rate limited). Whole
 -- buckets are summed, from the one holding now - window to the current one, and secs is
 -- the time those buckets actually cover (from the start of the oldest one seen to now),
 -- so the rate stays right whether the window starts mid-bucket or the counters are
@@ -43,19 +53,20 @@ function _M.window(window, now)
   local first = bucket(now - window)
   local oldest = {}
   for _, k in ipairs(d:get_keys(0)) do
-    local kind = sub(k, 1, 2)
-    if kind == "r:" or kind == "b:" then
-      local c = find(k, ":", 3, true)
-      local host = c and sub(k, 3, c - 1)
+    local p = find(k, ":", 1, true)
+    local kind = p and sub(k, 1, p - 1)
+    if kind == "r" or kind == "b" or kind == "l" or kind == "dr" then
+      local c = find(k, ":", p + 1, true)
+      local host = c and sub(k, p + 1, c - 1)
       local b = c and tonumber(sub(k, c + 1))
       if host and b and b >= first and b <= cur then
         local v = tonumber(d:get(k)) or 0
         local h = out[host]
         if not h then
-          h = { r = 0, b = 0 }
+          h = { r = 0, b = 0, l = 0, dr = 0 }
           out[host] = h
         end
-        if kind == "r:" then h.r = h.r + v else h.b = h.b + v end
+        h[kind] = h[kind] + v
         if not oldest[host] or b < oldest[host] then oldest[host] = b end
       end
     end
@@ -67,7 +78,7 @@ function _M.window(window, now)
   return out
 end
 
--- Status port: GET /traffic?window=<seconds> → {"<host>": {"r": n, "b": n, "secs": n}}
+-- Status port: GET /traffic?window=<seconds> → {"<host>": {"r", "b", "l", "dr", "secs"}}
 function _M.serve()
   local rules = require "corvus.rules"
   if not rules.status_key_ok() then return end

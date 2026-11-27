@@ -1,9 +1,11 @@
-import { IconAlertTriangle, IconCircleCheck, IconList, IconShieldLock, IconWorld } from "@tabler/icons-react";
+import { IconAlertTriangle, IconBan, IconCircleCheck, IconList, IconShieldLock, IconWorld } from "@tabler/icons-react";
 import cn from "classnames";
 import { type ReactNode, useState } from "react";
 import { useSentinelLists, useSentinelRules, useSentinelStatus } from "src/hooks";
 import { formatDateTime, getLocale, T } from "src/locale";
+import Bans from "./Bans";
 import Lists from "./Lists";
+import RateLimits from "./RateLimits";
 import Rules from "./Rules";
 import UnderAttack from "./UnderAttack";
 
@@ -21,7 +23,7 @@ function Tile({
 	sub?: ReactNode;
 }) {
 	return (
-		<div className="col-sm-6 col-lg-3">
+		<div className="col-sm-6 col-lg">
 			<div className="card card-sm h-100">
 				<div className="card-body">
 					<div className="row align-items-center">
@@ -40,8 +42,12 @@ function Tile({
 	);
 }
 
+type Tab = "rules" | "lists" | "under-attack" | "bans" | "rate-limits";
+
+const TABS: Tab[] = ["rules", "lists", "under-attack", "bans", "rate-limits"];
+
 export default function Layout() {
-	const [tab, setTab] = useState<"rules" | "lists" | "under-attack">("rules");
+	const [tab, setTab] = useState<Tab>("rules");
 	const status = useSentinelStatus({ refetchInterval: 30 * 1000 });
 	const rules = useSentinelRules();
 	const lists = useSentinelLists();
@@ -52,6 +58,7 @@ export default function Layout() {
 	const deploy = status.data?.deploy;
 	const geo = status.data?.geoip;
 	const attacked = status.data?.underAttack?.active || 0;
+	const bans = status.data?.bans;
 
 	return (
 		<>
@@ -75,6 +82,19 @@ export default function Layout() {
 							</span>
 						) : (
 							<T id="sentinel.tile.lists.sub" data={{ n: feeds.length }} />
+						)
+					}
+				/>
+				<Tile
+					icon={<IconBan size={20} />}
+					color="orange"
+					label={<T id="sentinel.tile.bans" />}
+					value={bans?.active ?? 0}
+					sub={
+						bans?.sync && !bans.sync.ok ? (
+							<span className="text-warning">{bans.sync.error}</span>
+						) : (
+							<T id="sentinel.tile.bans.sub" />
 						)
 					}
 				/>
@@ -125,37 +145,33 @@ export default function Layout() {
 				<div className="card-status-top bg-red" />
 				<div className="card-header">
 					<ul className="nav nav-tabs card-header-tabs">
-						<li className="nav-item">
-							<button
-								type="button"
-								className={cn("nav-link", tab === "rules" && "active")}
-								onClick={() => setTab("rules")}
-							>
-								<T id="sentinel.rules" />
-							</button>
-						</li>
-						<li className="nav-item">
-							<button
-								type="button"
-								className={cn("nav-link", tab === "lists" && "active")}
-								onClick={() => setTab("lists")}
-							>
-								<T id="sentinel.lists" />
-							</button>
-						</li>
-						<li className="nav-item">
-							<button
-								type="button"
-								className={cn("nav-link", tab === "under-attack" && "active")}
-								onClick={() => setTab("under-attack")}
-							>
-								<T id="sentinel.under-attack" />
-								{attacked ? <span className="badge bg-red text-red-fg ms-2">{attacked}</span> : null}
-							</button>
-						</li>
+						{TABS.map((t) => (
+							<li key={t} className="nav-item">
+								<button
+									type="button"
+									className={cn("nav-link", tab === t && "active")}
+									onClick={() => setTab(t)}
+								>
+									<T id={`sentinel.${t}`} />
+									{t === "under-attack" && attacked ? (
+										<span className="badge bg-red text-red-fg ms-2">{attacked}</span>
+									) : null}
+								</button>
+							</li>
+						))}
 					</ul>
 				</div>
-				{tab === "rules" ? <Rules /> : tab === "lists" ? <Lists /> : <UnderAttack />}
+				{tab === "rules" ? (
+					<Rules />
+				) : tab === "lists" ? (
+					<Lists />
+				) : tab === "under-attack" ? (
+					<UnderAttack />
+				) : tab === "bans" ? (
+					<Bans />
+				) : (
+					<RateLimits />
+				)}
 			</div>
 		</>
 	);

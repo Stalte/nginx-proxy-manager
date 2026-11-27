@@ -1,0 +1,120 @@
+{
+	"operationId": "updateSentinelRateLimit",
+	"summary": "Update a rate limit policy",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"parameters": [
+		{
+			"in": "path",
+			"name": "rateLimitID",
+			"description": "Rate limit ID",
+			"schema": {
+				"type": "integer",
+				"minimum": 1
+			},
+			"required": true,
+			"example": 1
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"name": {
+							"type": "string",
+							"minLength": 1,
+							"maxLength": 64,
+							"example": "Login pages"
+						},
+						"enabled": {
+							"type": "boolean",
+							"example": true
+						},
+						"requests_per_second": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100000,
+							"example": 10
+						},
+						"burst": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 100000,
+							"example": 20
+						},
+						"max_connections": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 100000,
+							"description": "Simultaneous connections per client (0: no limit)",
+							"example": 0
+						},
+						"status_code": {
+							"type": "integer",
+							"enum": [
+								429,
+								503,
+								403
+							],
+							"example": 429
+						},
+						"dry_run": {
+							"type": "boolean",
+							"description": "Only count what would be refused",
+							"example": false
+						},
+						"exempt": {
+							"type": "array",
+							"maxItems": 1000,
+							"items": {
+								"type": "string",
+								"maxLength": 64
+							},
+							"example": [
+								"192.168.0.0/16"
+							],
+							"description": "Networks the policy does not limit"
+						},
+						"host_ids": {
+							"type": "array",
+							"maxItems": 10000,
+							"items": {
+								"type": "integer",
+								"minimum": 1
+							},
+							"example": [
+								1
+							]
+						}
+					},
+					"minProperties": 1
+				}
+			}
+		}
+	},
+	"responses": {
+		"200": {
+			"description": "200 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../../components/sentinel-rate-limit-object.json"
+					}
+				}
+			}
+		}
+	}
+}

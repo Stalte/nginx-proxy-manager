@@ -1,0 +1,61 @@
+{
+	"operationId": "createSentinelBan",
+	"summary": "Ban an IP address (an IPv6 address bans its /64)",
+	"tags": [
+		"sentinel"
+	],
+	"security": [
+		{
+			"bearerAuth": [
+				"admin"
+			]
+		}
+	],
+	"requestBody": {
+		"description": "Payload",
+		"required": true,
+		"content": {
+			"application/json": {
+				"schema": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"ip"
+					],
+					"properties": {
+						"ip": {
+							"type": "string",
+							"minLength": 2,
+							"maxLength": 64,
+							"example": "203.0.113.7"
+						},
+						"reason": {
+							"type": "string",
+							"maxLength": 500,
+							"example": ""
+						},
+						"duration_s": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 2592000,
+							"description": "0: permanent",
+							"example": 3600
+						}
+					}
+				}
+			}
+		}
+	},
+	"responses": {
+		"201": {
+			"description": "201 response",
+			"content": {
+				"application/json": {
+					"schema": {
+						"$ref": "../../../components/sentinel-ban-object.json"
+					}
+				}
+			}
+		}
+	}
+}

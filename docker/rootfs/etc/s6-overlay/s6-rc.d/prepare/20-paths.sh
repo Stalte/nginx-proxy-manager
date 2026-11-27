@@ -31,6 +31,8 @@ mkdir -p \
 	/data/sentinel \
 	/data/sentinel/lists \
 	/data/sentinel/geoip \
+	/data/sentinel/nginx \
+	/data/sentinel/hosts \
 	/run/nginx \
 	/tmp/nginx/body \
 	/var/log/nginx \
